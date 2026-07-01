@@ -24,10 +24,6 @@ struct weapon_config_t {
 };
 
 struct config {
-	struct {
-		bool panic = false;
-	} client;
-
     struct {
         struct {
             bool enable = false;

@@ -60,9 +60,10 @@ struct c_bvh_node {
 
 class c_visible_check {
 public:
+    bool was_init = false;
     static inline bool updating = false;
 
-    c_visible_check() = default;
+    c_visible_check();
     c_visible_check(const std::string& file);
 
     bool is_point_visible(const vector3_t& point1, const vector3_t& point2);

@@ -14,15 +14,6 @@
 
 #define fsleep(sec) std::this_thread::sleep_for(std::chrono::seconds(sec))
 
-bool c_cheat_core::process_focused() {
-	//HWND fg = GetForegroundWindow();
-	//DWORD pid = 0;
-	//GetWindowThreadProcessId(fg, &pid);
-
-	//return pid == this->processID;
-	return false;
-}
-
 void c_cheat_core::init() {
 	SetConsoleTitleA("nyaware cs2 [external]");
 
@@ -73,9 +64,16 @@ void c_cheat_core::init() {
 
 void c_cheat_core::update() {
 	while (true) {
-		if (cfg.client.panic) {
+		if (g.panic) {
 			LOGI("panic");
-			break;
+
+			static bool skipped_frame = false;
+			
+			if (skipped_frame)
+				break;
+
+			if (!skipped_frame)
+				skipped_frame = true;
 		}
 
 		if (!g.modules.isValid()) {

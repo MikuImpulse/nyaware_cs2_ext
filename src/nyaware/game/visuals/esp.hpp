@@ -59,7 +59,6 @@ struct esp_player_t {
     void skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const;
     void weapon(const std::string& weapon_icon, const std::string& weapon_name, int ammo, int ammo_max, bool reloading, float font_size) const;
     void flags(bool is_defusing, bool is_scoped, float font_size) const;    
-    //void out_screen(const vector3_t& player_pos, const vector3_t& eye_pos, const matrix_t& view_matrix) const;
 
     esp_player_t(ImDrawList* draw, ImRect bounds);
 };

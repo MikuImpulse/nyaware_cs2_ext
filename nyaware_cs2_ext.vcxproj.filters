@@ -289,9 +289,6 @@
       <Filter>nyaware\interface\data\fonts\bytes</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\nyaware\data\sdk\source2\structs\trace_masks.hpp">
-      <Filter>nyaware\data\sdk\source2\structs</Filter>
-    </ClInclude>
     <ClInclude Include="src\nyaware\game\visuals\visuals.hpp">
       <Filter>nyaware\game\visuals</Filter>
     </ClInclude>

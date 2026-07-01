@@ -174,6 +174,10 @@ bool c_optimized_geometry::create_optimized_file(const std::string& raw_file, co
     return true;
 }
 
+c_visible_check::c_visible_check() {
+    was_init = false;
+}
+
 c_visible_check::c_visible_check(const std::string& file) {
     updating = true;
 
@@ -184,6 +188,7 @@ c_visible_check::c_visible_check(const std::string& file) {
     }
 
     updating = false;
+    was_init = true;
 }
 
 std::unique_ptr<c_bvh_node> c_visible_check::build_bvh(const std::vector<triangleCombined_t>& tris) {

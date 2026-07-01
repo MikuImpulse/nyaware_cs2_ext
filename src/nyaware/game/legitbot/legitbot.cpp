@@ -79,7 +79,9 @@ void c_legitbot::find_target(const player_t& player, const player_t& local_playe
     }
 
     vector3_t bonePos = player.pawn->m_pGameSceneNodeParent()->m_pBoneList()->position(bone);
-    if (!g.uinterface.ui.is_map_updating && !g.runtime.visible_check_daemon.is_point_visible(local_player.top_position, bonePos)) return;
+
+    if (g.runtime.visible_check_daemon.was_init && !g.uinterface.ui.is_map_updating && 
+        !g.runtime.visible_check_daemon.is_point_visible(local_player.top_position, bonePos)) return;
 
     vector3_t boneScreen = view_matrix.worldToScreenPoint(g.screen, bonePos);
     if (boneScreen.z < 0.f) return;
@@ -123,8 +125,6 @@ void c_legitbot::auto_aim(const player_t& local_player, weapon_config_t* weapon_
         mouse_event(MOUSEEVENTF_MOVE, move_x, move_y, 0, 0);
     }
 }
-
-#include "utils/log.hpp"
 
 void c_legitbot::auto_fire(uintptr_t entity_list, uint8_t local_team, const player_t& local_player, weapon_config_t* weapon_cfg) {
     static float delay_timer = 0.f;

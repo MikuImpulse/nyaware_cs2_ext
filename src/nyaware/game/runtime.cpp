@@ -65,15 +65,21 @@ void c_runtime_manager::update_map() {
     if (global_vars) {
         std::string map_name = mem.read_str(mem.read<uintptr_t>(global_vars + 0x188));
 
-        if (std::find(maps.begin(), maps.end(), map_name) != maps.end() && current_map != map_name) {
-            std::thread([this, map_name]() {
-                g.uinterface.ui.is_map_updating = true;
+        if (current_map != map_name) {
+            this->current_map = map_name;
 
-                this->current_map = map_name;
-                this->visible_check_daemon = c_visible_check(std::format("C:\\nyaware\\maps_cache\\{}.opt", map_name));
+            if (std::find(maps.begin(), maps.end(), map_name) != maps.end()) {
+                std::thread([this, map_name]() {
+                    g.uinterface.ui.is_map_updating = true;
 
-                g.uinterface.ui.is_map_updating = false;
-            }).detach();
+                    this->visible_check_daemon = c_visible_check(std::format("C:\\nyaware\\maps_cache\\{}.opt", map_name));
+
+                    g.uinterface.ui.is_map_updating = false;
+                }).detach();
+            }
+            else {
+                this->visible_check_daemon = {};
+            }
         }
     }
 }

@@ -134,7 +134,7 @@ void c_esp::process_player(ImDrawList* draw, const player_t& player, const playe
         if (cfg.visuals.esp.player.flags.draw) esp_p.flags(player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), 13.f);
     }
     else {
-        //esp_p.out_screen(player.position, player.pawn->m_vecViewOffset(), view_matrix);
+        // may be offscreen arrows
     }
 }
 
@@ -335,7 +335,7 @@ void esp_player_t::skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, con
             vector3_t boneScreen2 = view_matrix.worldToScreenPoint(g.screen, bonePos2);
 
             ImColor boneColor{};
-            if (cfg.visuals.esp.player.skeleton.visible_check && is_local_alive && !g.uinterface.ui.is_map_updating) {
+            if (cfg.visuals.esp.player.skeleton.visible_check && is_local_alive && g.runtime.visible_check_daemon.was_init && !g.uinterface.ui.is_map_updating) {
                 if (g.runtime.visible_check_daemon.is_point_visible(local_position, bonePos1) ||
                     g.runtime.visible_check_daemon.is_point_visible(local_position, bonePos2))
 

@@ -76,7 +76,6 @@
     <ClInclude Include="src\nyaware\data\sdk\source2\classes\schema.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\include.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\source2.hpp" />
-    <ClInclude Include="src\nyaware\data\sdk\source2\structs\trace_masks.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\triangle.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector2.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector3.hpp" />

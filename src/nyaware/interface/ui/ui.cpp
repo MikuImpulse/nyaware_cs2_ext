@@ -288,7 +288,8 @@ void c_user_interface::render() {
             ImGui::Text(std::format("build date: {} {}", __DATE__, __TIME__).c_str());
 
             if (ImGui::Button("panic")) {
-                cfg.client.panic = true;
+                cfg = {};
+                g.panic = true;
             }
         }
 

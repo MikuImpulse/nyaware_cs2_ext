@@ -11,7 +11,7 @@
 #include "game/runtime.hpp"
 
 struct globals_t {
-	bool initialized{};
+	bool initialized{}, panic{};
 
 	struct {
 		dll_t client{};
