@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\includes\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\includes\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\includes\imgui\imgui.cpp" />
+    <ClCompile Include="src\includes\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\includes\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\includes\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\nyaware\core\core.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_controller.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_pawn.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\nyaware\structs\physics.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\nyaware\structs\player.cpp" />
+    <ClCompile Include="src\nyaware\data\sdk\schema_dumper.cpp" />
+    <ClCompile Include="src\nyaware\game\functions\functions.cpp" />
+    <ClCompile Include="src\nyaware\game\runtime.cpp" />
+    <ClCompile Include="src\nyaware\game\legitbot\legitbot.cpp" />
+    <ClCompile Include="src\nyaware\game\visuals\esp.cpp" />
+    <ClCompile Include="src\nyaware\game\visuals\visuals.cpp" />
+    <ClCompile Include="src\nyaware\interface\interface.cpp" />
+    <ClCompile Include="src\nyaware\interface\ui\modules\modules.cpp" />
+    <ClCompile Include="src\nyaware\interface\ui\ui.cpp" />
+    <ClCompile Include="src\nyaware\utils\memory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\includes\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="src\includes\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="src\includes\imgui\imconfig.h" />
+    <ClInclude Include="src\includes\imgui\imgui.h" />
+    <ClInclude Include="src\includes\imgui\imgui_internal.h" />
+    <ClInclude Include="src\includes\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\includes\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\includes\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\nyaware\core\core.hpp" />
+    <ClInclude Include="src\nyaware\data\config.hpp" />
+    <ClInclude Include="src\nyaware\data\globals.hpp" />
+    <ClInclude Include="src\nyaware\data\patterns.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_c4.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_model_entity.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_controller.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_pawn.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_model_skeleton.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_weapon.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_game.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\cs2\include.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\include.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\structs\physics.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\structs\player.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\schema_dumper.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\sdk.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\classes\input.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\classes\schema.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\include.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\source2.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\trace_masks.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\triangle.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector2.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector3.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector4.hpp" />
+    <ClInclude Include="src\nyaware\game\functions\functions.hpp" />
+    <ClInclude Include="src\nyaware\game\runtime.hpp" />
+    <ClInclude Include="src\nyaware\game\legitbot\legitbot.hpp" />
+    <ClInclude Include="src\nyaware\game\visuals\esp.hpp" />
+    <ClInclude Include="src\nyaware\game\visuals\visuals.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\eurostile-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome_bytes.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\jacobs-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\nyaware-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\weapon-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\data\fonts\include.hpp" />
+    <ClInclude Include="src\nyaware\interface\interface.hpp" />
+    <ClInclude Include="src\nyaware\interface\ui\modules\modules.hpp" />
+    <ClInclude Include="src\nyaware\interface\ui\ui.hpp" />
+    <ClInclude Include="src\nyaware\utils\log.hpp" />
+    <ClInclude Include="src\nyaware\utils\memory.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nyaware_cs2_ext.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3ef0379f-1c83-4ddc-8494-456b118ed74e}</ProjectGuid>
+    <RootNamespace>nyawarecs2ext</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>external_cs2</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>external_cs2</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\cheatscoding\nyaware_cs2_ext\src\nyaware;D:\cheatscoding\nyaware_cs2_ext\src\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)external_cs2$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\cheatscoding\nyaware_cs2_ext\src\nyaware;D:\cheatscoding\nyaware_cs2_ext\src\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)external_cs2$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

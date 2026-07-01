@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="nyaware_cs2_ext.vcxproj" Id="3ef0379f-1c83-4ddc-8494-456b118ed74e" />
+</Solution>
