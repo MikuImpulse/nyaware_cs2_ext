@@ -26,7 +26,7 @@ struct globals_t {
 	screen_t screen{};
 
 	struct {
-		ImFont* jacobs{};
+		ImFont* visuals{};
 		ImFont* weapon{};
 	} fonts;
 

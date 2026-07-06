@@ -8,144 +8,6 @@
 
 #include "utils/log.hpp"
 
-ImVec2 c_esp::calc_rect(ImVec2 top, ImVec2 bottom) {
-    float height = top.y - bottom.y;
-    float width = height * 0.6f;
-
-    return { width, height };
-}
-
-float c_esp::calc_size_by_distance(float size_min, float size_max, float distance) {
-    float distanceSize = (size_max / distance) * (size_max / 2.0f);
-
-    return std::clamp(distanceSize, size_min, size_max);
-}
-
-std::pair<int, int> c_esp::calc_bomb(const std::string& map) {
-    static const auto fnv1a = [](const char* str, uint32_t hash = 2166136261UL) {
-        auto impl = [](auto& self, const char* s, uint32_t h) -> uint32_t {
-            return *s ? self(self, s + 1, (h ^ *s) * 16777619ULL) : h;
-            };
-
-        return impl(impl, str, hash);
-    };
-
-    switch (fnv1a(map.c_str())) {
-    case fnv1a("de_anubis"):
-        return { 450, 1575 };
-    case fnv1a("de_overpass"):
-        return { 650, 2275 };
-    case fnv1a("de_inferno"):
-        return { 600, 2100 };
-    case fnv1a("de_mirage"):
-        return { 650, 2275 };
-    case fnv1a("de_dust2"):
-        return { 700, 2450 };
-    case fnv1a("de_nuke"):
-        return { 650, 2275 };
-    case fnv1a("de_ancient"):
-        return { 650, 2275 };
-    case fnv1a("de_ancient_night"):
-        return { 650, 2275 };
-    case fnv1a("de_train"):
-        return { 500, 1750 };
-    case fnv1a("de_vertigo"):
-        return { 500, 1750 };
-    case fnv1a("de_cache"):
-        return { 600, 2100 };
-    case fnv1a("de_warden"):
-        return { 500, 1750 };
-    case fnv1a("de_stronghold"):
-        return { 650, 2275 };
-    case fnv1a("cs_alpine"):
-        return { 500, 1750 };
-    case fnv1a("cs_office"):
-        return { 500, 1750 };
-    case fnv1a("cs_italy"):
-        return { 500, 1750 };
-    }
-
-    return {};
-}
-
-int c_esp::calc_bomb_damage(vector3_t player_pos, vector3_t bomb_pos, int armor, const std::string& map) {
-    const std::pair<int, int> bomb_calculations = c_esp::calc_bomb(map);
-    const int bomb_damage = bomb_calculations.first;
-    const int bomb_radius = bomb_calculations.second;
-
-    const double c = bomb_radius / 3.0;
-
-    auto armor_modifier = [](float damage, int armor) -> float {
-        if (armor > 0) {
-            const float armor_ratio = 0.5f;
-            const float armor_bonus = 0.5f;
-            float armor_ratio_multiply = damage * armor_ratio;
-            float actual = (damage - armor_ratio_multiply) * armor_bonus;
-
-            if (actual > static_cast<float>(armor)) {
-                actual = static_cast<float>(armor) * (1.f / armor_bonus);
-                armor_ratio_multiply = damage - actual;
-            }
-
-            damage = armor_ratio_multiply;
-        }
-
-        return damage;
-    };
-
-    const float damage = bomb_damage * std::exp(-std::pow(vector3_t::distance(player_pos, bomb_pos), 2) / (2 * std::pow(c, 2)));
-    const float damage_armor = armor_modifier(damage, armor);
-
-    return static_cast<int>(std::floor(damage_armor));
-}
-
-void c_esp::draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, ImVec2 position, ImColor color, const char* text) {
-    if (cfg.visuals.esp.outline.draw) {
-        draw->AddText(font, font_size, ImVec2(position.x + 1.f, position.y + 1.f), cfg.visuals.esp.outline.color, text);
-        draw->AddText(font, font_size, ImVec2(position.x - 1.f, position.y - 1.f), cfg.visuals.esp.outline.color, text);
-        draw->AddText(font, font_size, ImVec2(position.x + 1.f, position.y - 1.f), cfg.visuals.esp.outline.color, text);
-        draw->AddText(font, font_size, ImVec2(position.x - 1.f, position.y + 1.f), cfg.visuals.esp.outline.color, text);
-    }
-
-    draw->AddText(font, font_size, position, color, text);
-}
-
-void c_esp::process_player(ImDrawList* draw, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const {
-    if (!cfg.visuals.esp.enable || !player.isAlive()) return;
-
-    vector3_t player_root = player.position;
-    vector3_t player_top = { player.top_position.x, player.top_position.y, player.top_position.z + 10.f };
-
-    vector3_t root_screen = view_matrix.worldToScreenPoint(g.screen, player_root);
-    vector3_t top_screen = view_matrix.worldToScreenPoint(g.screen, player_top);
-
-    esp_player_t esp_p(draw, ImRect(top_screen.x, top_screen.y, root_screen.x, root_screen.y));
-
-    if (root_screen.z > 0.f && top_screen.z > 0.f) {
-        float distance_toPlayer = vector3_t::distance(local_player.position, player_root);
-        float distance_meters = distance_toPlayer * 0.01f;
-
-        if (cfg.visuals.esp.player.tracer.draw) esp_p.tracer();
-        if (cfg.visuals.esp.player.rect.draw) esp_p.rectangle(player_root, player_top, view_matrix);
-        if (cfg.visuals.esp.player.health.draw) esp_p.health(player.health.value, player.health.max, 13.f);
-        if (cfg.visuals.esp.player.nickName.draw) esp_p.nickName(player.nickname, 13.f);
-        if (cfg.visuals.esp.player.skeleton.draw) esp_p.skeleton(player.pawn, local_player.isAlive(), local_player.top_position, view_matrix);
-        if (cfg.visuals.esp.player.weapon.draw) esp_p.weapon(player.weapon.icon, player.weapon.name, player.weapon.base->m_iClip1(), player.weapon.data->m_iMaxClip1(), player.weapon.base->m_bInReload(), 13.f);
-        if (cfg.visuals.esp.player.flags.draw) esp_p.flags(player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), 13.f);
-    }
-    else {
-        // may be offscreen arrows
-    }
-}
-
-void c_esp::process_world(ImDrawList* draw, C_CSGameRules* game_rules, C_PlantedC4* bomb, const player_t& local_player, const matrix_t& view_matrix) const {
-    if (!game_rules) return;
-
-    esp_world_t esp_w(draw);
-
-    esp_w.bomb(bomb, game_rules, local_player, view_matrix, 13.f);
-}
-
 void esp_player_t::tracer() const {
     if (cfg.visuals.esp.outline.draw)
         draw->AddLine(ImVec2(g.screen.width * 0.5f, 0), ImVec2(this->rect_bounds.GetCenter().x, this->rect_bounds.Min.y), cfg.visuals.esp.outline.color, 1.5f * 1.8f);
@@ -276,7 +138,7 @@ void esp_player_t::health(int health, int health_max, float font_size) const {
 
     std::string health_str = std::to_string(health);
 
-    ImVec2 text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, health_str.c_str());
+    ImVec2 text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, health_str.c_str());
     ImVec2 text_pos{};
 
     switch (cfg.visuals.esp.player.rect.mode) {
@@ -299,14 +161,14 @@ void esp_player_t::health(int health, int health_max, float font_size) const {
     if (cfg.visuals.esp.outline.draw)
         draw->AddRectFilled(ImVec2(health_bounds.Min.x - 1.f, health_bounds.Min.y - 1.f), ImVec2(health_bounds.Max.x + 1.f, health_bounds.Max.y + 1.f), cfg.visuals.esp.outline.color, 0.f);
 
-    draw->AddRectFilled(cfg.visuals.esp.player.rect.mode == 2 ? health_bounds.Min : ImVec2(health_bounds.Min.x, health_clamp_pos), cfg.visuals.esp.player.rect.mode == 2 ? ImVec2(health_clamp_pos, health_bounds.Max.y) : health_bounds.Max, cfg.visuals.esp.player.health.color, 0.f);
+    draw->AddRectFilled(cfg.visuals.esp.player.rect.mode == 2 ? health_bounds.Min : ImVec2(health_bounds.Min.x, health_clamp_pos), cfg.visuals.esp.player.rect.mode == 2 ? ImVec2(health_clamp_pos, health_bounds.Max.y) : health_bounds.Max, cfg.visuals.esp.player.health.bar_color, 0.f);
 
     if (health < health_max)
-        c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, text_pos, cfg.visuals.esp.player.health.text_color, health_str.c_str());
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, text_pos, cfg.visuals.esp.player.health.text_color, health_str.c_str());
 }
 
 void esp_player_t::nickName(const std::string& name, float font_size) const {
-    ImVec2 text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, name.c_str());
+    ImVec2 text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, name.c_str());
     ImVec2 text_pos{};
 
     switch (cfg.visuals.esp.player.rect.mode) {
@@ -318,7 +180,7 @@ void esp_player_t::nickName(const std::string& name, float font_size) const {
             break;
     }
 
-    c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, text_pos, cfg.visuals.esp.player.nickName.color, name.c_str());
+    c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, text_pos, cfg.visuals.esp.player.nickName.color, name.c_str());
 }
 
 void esp_player_t::skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const {
@@ -361,13 +223,13 @@ void esp_player_t::weapon(const std::string& weapon_icon, const std::string& wea
     const char* reload_str = "reloading..";
     std::string ammo_str = std::format("{}/{}", std::to_string(ammo), std::to_string(ammo_max)).c_str();
 
-    ImVec2 text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, weapon_name.c_str());
+    ImVec2 text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, weapon_name.c_str());
     ImVec2 text_pos{};
 
-    ImVec2 reloading_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, reload_str);
+    ImVec2 reloading_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, reload_str);
     ImVec2 reloading_pos{};
 
-    ImVec2 ammo_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, ammo_str.c_str());
+    ImVec2 ammo_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, ammo_str.c_str());
     ImVec2 ammo_pos{};
 
     switch (cfg.visuals.esp.player.rect.mode) {
@@ -417,44 +279,58 @@ void esp_player_t::weapon(const std::string& weapon_icon, const std::string& wea
         c_esp::draw_outlined_text(draw, g.fonts.weapon, font_size, icon_pos, cfg.visuals.esp.player.weapon.colors[0], weapon_icon.c_str());
 
     if (cfg.visuals.esp.player.weapon.modes[1])
-        c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, text_pos, cfg.visuals.esp.player.weapon.colors[1], weapon_name.c_str());
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, text_pos, cfg.visuals.esp.player.weapon.colors[1], weapon_name.c_str());
 
     if (cfg.visuals.esp.player.weapon.modes[2] && ammo >= 0) {
         if (reloading)
-            c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, reloading_pos, cfg.visuals.esp.player.weapon.colors[2], reload_str);
+            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, reloading_pos, cfg.visuals.esp.player.weapon.colors[2], reload_str);
         else
-            c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, ammo_pos, cfg.visuals.esp.player.weapon.colors[2], ammo_str.c_str());
+            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, ammo_pos, cfg.visuals.esp.player.weapon.colors[2], ammo_str.c_str());
     }
 }
 
-void esp_player_t::flags(bool is_defusing, bool is_scoped, float font_size) const {
+void esp_player_t::flags(bool is_defusing, bool is_scoped, uint32_t ping, float font_size) const {
     const char* defusing_str = "defusing";
     const char* scoped_str = "in scope";
 
-    ImVec2 defusing_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, defusing_str);
+    std::string ping_str = std::format("{} ms", ping);
+
+    ImVec2 defusing_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, defusing_str);
     ImVec2 defusing_pos{};
 
-    ImVec2 scoped_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, scoped_str);
+    ImVec2 scoped_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, scoped_str);
     ImVec2 scoped_pos{};
+
+    ImVec2 ping_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, ping_str.c_str());
+    ImVec2 ping_pos{};
+
+    const bool draw_defusing = cfg.visuals.esp.player.flags.modes[0] && is_defusing;
+    const bool draw_scoped = cfg.visuals.esp.player.flags.modes[1] && is_scoped;
 
     switch (cfg.visuals.esp.player.rect.mode) {
         case 0: case 1:
             defusing_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y };
-            scoped_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (cfg.visuals.esp.player.flags.modes[0] && is_defusing ? defusing_size.y : 0) };
+            scoped_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (draw_defusing ? defusing_size.y : 0.f) };
+            ping_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (draw_defusing ? defusing_size.y : 0.f) + (draw_scoped ? scoped_size.y : 0.f) };
 
             break;
+
         case 2:
             defusing_pos = { bounds.Min.x - defusing_size.x * 0.5f, bounds.Min.y - 30.f - defusing_size.y };
-            scoped_pos = { bounds.Min.x - scoped_size.x * 0.5f, bounds.Min.y - 30.f - (cfg.visuals.esp.player.flags.modes[0] && is_defusing ? defusing_size.y : 0) - scoped_size.y };
+            scoped_pos = { bounds.Min.x - scoped_size.x * 0.5f, bounds.Min.y - 30.f - (draw_defusing ? defusing_size.y : 0.f) - scoped_size.y };
+            ping_pos = { bounds.Min.x - ping_size.x * 0.5f, bounds.Min.y - 30.f - (draw_defusing ? defusing_size.y : 0.f) - (draw_scoped ? scoped_size.y : 0.f) - ping_size.y};
 
             break;
     }
 
-    if (cfg.visuals.esp.player.flags.modes[0] && is_defusing)
-        c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, defusing_pos, cfg.visuals.esp.player.flags.colors[0], defusing_str);
+    if (draw_defusing)
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, defusing_pos, cfg.visuals.esp.player.flags.colors[0], defusing_str);
 
-    if (cfg.visuals.esp.player.flags.modes[1] && is_scoped)
-        c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, scoped_pos, cfg.visuals.esp.player.flags.colors[1], scoped_str);
+    if (draw_scoped)
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, scoped_pos, cfg.visuals.esp.player.flags.colors[1], scoped_str);
+
+    if (cfg.visuals.esp.player.flags.modes[2])
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, ping_pos, cfg.visuals.esp.player.flags.colors[2], ping_str.c_str());
 }
 
 esp_player_t::esp_player_t(ImDrawList* draw, ImRect bounds) {
@@ -512,23 +388,23 @@ void esp_world_t::bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_
 
             std::string damage_str = std::format("damage: {}", damage == 99999 ? "invalid map!" : (local_player.isAlive() ? (local_player.health.value <= damage ? "LETHAL" : std::to_string(damage)) : "you're already dead bruh"));
 
-            ImVec2 damage_text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, damage_str.c_str());
+            ImVec2 damage_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, damage_str.c_str());
             ImVec2 damage_text_pos = { bomb_scr.x - damage_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y * 0.5f };
 
             std::string timer_str = std::format("time left: {:.1f}s", bomb_timer);
 
-            ImVec2 timer_text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, timer_str.c_str());
+            ImVec2 timer_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, timer_str.c_str());
             ImVec2 timer_text_pos = { bomb_scr.x - timer_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y - timer_text_size.y * 0.5f };
 
             std::string site_str = std::format("site: {}", bomb_site);
 
-            ImVec2 site_text_size = g.fonts.jacobs->CalcTextSizeA(font_size, FLT_MAX, 0.f, site_str.c_str());
+            ImVec2 site_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, site_str.c_str());
             ImVec2 site_text_pos = { bomb_scr.x - site_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y - timer_text_size.y - site_text_size.y * 0.5f };
 
             c_esp::draw_outlined_text(draw, g.fonts.weapon, font_size, icon_pos, ImColor(255, 255, 255), "E");
-            c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, damage_text_pos, ImColor(255, 255, 255), damage_str.c_str());
-            c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, timer_text_pos, ImColor(255, 255, 255), timer_str.c_str());
-            c_esp::draw_outlined_text(draw, g.fonts.jacobs, font_size, site_text_pos, ImColor(255, 255, 255), site_str.c_str());
+            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, damage_text_pos, ImColor(255, 255, 255), damage_str.c_str());
+            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, timer_text_pos, ImColor(255, 255, 255), timer_str.c_str());
+            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, site_text_pos, ImColor(255, 255, 255), site_str.c_str());
         }
     }
     else {
@@ -538,4 +414,142 @@ void esp_world_t::bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_
 
 esp_world_t::esp_world_t(ImDrawList* draw) {
     this->draw = draw;
+}
+
+ImVec2 c_esp::calc_rect(ImVec2 top, ImVec2 bottom) {
+    float height = top.y - bottom.y;
+    float width = height * 0.6f;
+
+    return { width, height };
+}
+
+float c_esp::calc_size_by_distance(float size_min, float size_max, float distance) {
+    float distanceSize = (size_max / distance) * (size_max / 2.0f);
+
+    return std::clamp(distanceSize, size_min, size_max);
+}
+
+std::pair<int, int> c_esp::calc_bomb(const std::string& map) {
+    static const auto fnv1a = [](const char* str, uint32_t hash = 2166136261UL) {
+        auto impl = [](auto& self, const char* s, uint32_t h) -> uint32_t {
+            return *s ? self(self, s + 1, (h ^ *s) * 16777619ULL) : h;
+            };
+
+        return impl(impl, str, hash);
+    };
+
+    switch (fnv1a(map.c_str())) {
+    case fnv1a("de_anubis"):
+        return { 450, 1575 };
+    case fnv1a("de_overpass"):
+        return { 650, 2275 };
+    case fnv1a("de_inferno"):
+        return { 600, 2100 };
+    case fnv1a("de_mirage"):
+        return { 650, 2275 };
+    case fnv1a("de_dust2"):
+        return { 700, 2450 };
+    case fnv1a("de_nuke"):
+        return { 650, 2275 };
+    case fnv1a("de_ancient"):
+        return { 650, 2275 };
+    case fnv1a("de_ancient_night"):
+        return { 650, 2275 };
+    case fnv1a("de_train"):
+        return { 500, 1750 };
+    case fnv1a("de_vertigo"):
+        return { 500, 1750 };
+    case fnv1a("de_cache"):
+        return { 600, 2100 };
+    case fnv1a("de_warden"):
+        return { 500, 1750 };
+    case fnv1a("de_stronghold"):
+        return { 650, 2275 };
+    case fnv1a("cs_alpine"):
+        return { 500, 1750 };
+    case fnv1a("cs_office"):
+        return { 500, 1750 };
+    case fnv1a("cs_italy"):
+        return { 500, 1750 };
+    }
+
+    return {};
+}
+
+int c_esp::calc_bomb_damage(vector3_t player_pos, vector3_t bomb_pos, int armor, const std::string& map) {
+    const std::pair<int, int> bomb_calculations = c_esp::calc_bomb(map);
+    const int bomb_damage = bomb_calculations.first;
+    const int bomb_radius = bomb_calculations.second;
+
+    const double c = bomb_radius / 3.0;
+
+    auto armor_modifier = [](float damage, int armor) -> float {
+        if (armor > 0) {
+            const float armor_ratio = 0.5f;
+            const float armor_bonus = 0.5f;
+            float armor_ratio_multiply = damage * armor_ratio;
+            float actual = (damage - armor_ratio_multiply) * armor_bonus;
+
+            if (actual > static_cast<float>(armor)) {
+                actual = static_cast<float>(armor) * (1.f / armor_bonus);
+                armor_ratio_multiply = damage - actual;
+            }
+
+            damage = armor_ratio_multiply;
+        }
+
+        return damage;
+        };
+
+    const float damage = bomb_damage * std::exp(-std::pow(vector3_t::distance(player_pos, bomb_pos), 2) / (2 * std::pow(c, 2)));
+    const float damage_armor = armor_modifier(damage, armor);
+
+    return static_cast<int>(std::floor(damage_armor));
+}
+
+void c_esp::draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, ImVec2 position, ImColor color, const char* text) {
+    if (cfg.visuals.esp.outline.draw) {
+        draw->AddText(font, font_size, ImVec2(position.x + 1.f, position.y + 1.f), cfg.visuals.esp.outline.color, text);
+        draw->AddText(font, font_size, ImVec2(position.x - 1.f, position.y - 1.f), cfg.visuals.esp.outline.color, text);
+        draw->AddText(font, font_size, ImVec2(position.x + 1.f, position.y - 1.f), cfg.visuals.esp.outline.color, text);
+        draw->AddText(font, font_size, ImVec2(position.x - 1.f, position.y + 1.f), cfg.visuals.esp.outline.color, text);
+    }
+
+    draw->AddText(font, font_size, position, color, text);
+}
+
+void c_esp::process_player(ImDrawList* draw, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const {
+    if (!player.isAlive()) return;
+
+    vector3_t player_root = player.position;
+    vector3_t player_top = { player.top_position.x, player.top_position.y, player.top_position.z + 10.f };
+
+    vector3_t root_screen = view_matrix.worldToScreenPoint(g.screen, player_root);
+    vector3_t top_screen = view_matrix.worldToScreenPoint(g.screen, player_top);
+
+    esp_player_t esp_p(draw, ImRect(top_screen.x, top_screen.y, root_screen.x, root_screen.y));
+
+    if (root_screen.z > 0.f && top_screen.z > 0.f) {
+        float distance_toPlayer = vector3_t::distance(local_player.position, player_root);
+        float distance_meters = distance_toPlayer * 0.01f;
+
+        if (cfg.visuals.esp.player.tracer.draw) esp_p.tracer();
+        if (cfg.visuals.esp.player.rect.draw) esp_p.rectangle(player_root, player_top, view_matrix);
+        if (cfg.visuals.esp.player.health.draw) esp_p.health(player.health.value, player.health.max, 13.f);
+        if (cfg.visuals.esp.player.nickName.draw) esp_p.nickName(player.nickname, 13.f);
+        if (cfg.visuals.esp.player.skeleton.draw) esp_p.skeleton(player.pawn, local_player.isAlive(), local_player.top_position, view_matrix);
+        if (cfg.visuals.esp.player.weapon.draw) esp_p.weapon(player.weapon.icon, player.weapon.name, player.weapon.base->m_iClip1(), player.weapon.data->m_iMaxClip1(), player.weapon.base->m_bInReload(), 13.f);
+        if (cfg.visuals.esp.player.flags.draw) esp_p.flags(player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), player.ping, 13.f);
+    }
+    else {
+        // may be offscreen arrows
+    }
+}
+
+void c_esp::process_world(ImDrawList* draw, C_CSGameRules* game_rules, C_PlantedC4* bomb, const player_t& local_player, const matrix_t& view_matrix) const {
+    if (!game_rules) return;
+
+    esp_world_t esp_w(draw);
+
+    esp_w.bomb(bomb, game_rules, local_player, view_matrix, 13.f);
 }

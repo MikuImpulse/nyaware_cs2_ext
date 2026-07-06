@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 #include <string>
 #include <windows.h>
 
@@ -11,6 +12,15 @@ inline NTSTATUS (NTAPI* NtWriteVirtualMemory)(HANDLE ProcessHandle, PVOID BaseAd
 
 class c_memory_manager {
 private:
+	struct patch_t {
+		uintptr_t address{};
+		std::vector<uint8_t> original_bytes{};
+		std::vector<uint8_t> patched_bytes{};
+		bool restored{};
+	};
+
+	std::vector<patch_t> patches;
+
 	void* processHandle = nullptr;
 public:
 	int get_processID(std::string process_name);
@@ -54,6 +64,9 @@ public:
 
 	uintptr_t find_pattern(uintptr_t module_base, size_t module_size, const char* signature);
 	uintptr_t resolve_pattern(uintptr_t module_base, size_t module_size, const char* signature);
+
+	int patch(uintptr_t address_rva, const std::vector<uint8_t>& bytes, uintptr_t module_base = 0);
+	bool restore(int patch_index);
 
 	bool init(int process_id);
 };

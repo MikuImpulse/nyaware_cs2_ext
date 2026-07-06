@@ -28,6 +28,7 @@
     <ClCompile Include="src\includes\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\nyaware\core\core.cpp" />
+    <ClCompile Include="src\nyaware\data\config.cpp" />
     <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.cpp" />
     <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_controller.cpp" />
     <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_pawn.cpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="src\nyaware\game\visuals\esp.cpp" />
     <ClCompile Include="src\nyaware\game\visuals\visuals.cpp" />
     <ClCompile Include="src\nyaware\interface\interface.cpp" />
+    <ClCompile Include="src\nyaware\interface\ui\modules\color.cpp" />
     <ClCompile Include="src\nyaware\interface\ui\modules\modules.cpp" />
     <ClCompile Include="src\nyaware\interface\ui\ui.cpp" />
     <ClCompile Include="src\nyaware\utils\memory.cpp" />
@@ -85,14 +87,17 @@
     <ClInclude Include="src\nyaware\game\legitbot\legitbot.hpp" />
     <ClInclude Include="src\nyaware\game\visuals\esp.hpp" />
     <ClInclude Include="src\nyaware\game\visuals\visuals.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\eurostile-font.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome_bytes.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\jacobs-font.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\nyaware-font.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\weapon-font.hpp" />
-    <ClInclude Include="src\nyaware\interface\data\fonts\include.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\google_sans-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\gotham-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\jacobs-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\menu_icons-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\montserrat-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\nyaware-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\pixel-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\weapon-font.hpp" />
+    <ClInclude Include="src\nyaware\interface\fonts\include.hpp" />
     <ClInclude Include="src\nyaware\interface\interface.hpp" />
+    <ClInclude Include="src\nyaware\interface\ui\modules\color.hpp" />
     <ClInclude Include="src\nyaware\interface\ui\modules\modules.hpp" />
     <ClInclude Include="src\nyaware\interface\ui\ui.hpp" />
     <ClInclude Include="src\nyaware\utils\log.hpp" />
@@ -203,7 +208,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)external_cs2$(TargetExt)</OutputFile>
@@ -224,7 +229,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;urlmon.lib;bcrypt.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <OutputFile>$(OutDir)external_cs2$(TargetExt)</OutputFile>

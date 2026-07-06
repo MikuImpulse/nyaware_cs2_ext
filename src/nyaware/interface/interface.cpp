@@ -42,7 +42,7 @@ void c_interface::newFrame() {
 
 	ImGui::NewFrame();
 
-	if (GetAsyncKeyState(VK_INSERT) & 1) {
+	if (GetAsyncKeyState(cfg.ui.menu_keybind) & 1) {
 		ui.is_opened = !ui.is_opened;
 
 		if (!ui.is_opened)

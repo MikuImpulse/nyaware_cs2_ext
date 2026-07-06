@@ -39,6 +39,9 @@ private:
 
 	c_functions functions{};
 public:
+	uint32_t local_ping{};
+	vector3_t local_velocity{};
+
 	matrix_t view_matrix{};
 
 	c_visible_check visible_check_daemon{};
@@ -46,7 +49,7 @@ public:
 
 	uintptr_t get_jumpButton(uintptr_t key_buttons_header_ptr);
 
-	void update_map();
+	void update_map(uintptr_t global_vars);
 	void update_ui_cfg(c_user_interface* ui);
 	void update();
 };

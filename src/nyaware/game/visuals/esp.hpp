@@ -1,10 +1,38 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 #include "data/sdk/sdk.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
+
+struct esp_player_t {
+    ImDrawList* draw{};
+
+    ImRect bounds{};
+
+    ImVec2 rect_size{};
+    ImRect rect_bounds{};
+
+    void tracer() const;
+    void rectangle(const vector3_t& player_pos, const vector3_t& player_top, const matrix_t& view_matrix) const;
+    void health(int health, int health_max, float font_size) const;
+    void nickName(const std::string& name, float font_size) const;
+    void skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const;
+    void weapon(const std::string& weapon_icon, const std::string& weapon_name, int ammo, int ammo_max, bool reloading, float font_size) const;
+    void flags(bool is_defusing, bool is_scoped, uint32_t ping, float font_size) const;
+
+    esp_player_t(ImDrawList* draw, ImRect bounds);
+};
+
+struct esp_world_t {
+    ImDrawList* draw{};
+
+    void bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_t& local_player, const matrix_t& view_matrix, float font_size) const;
+
+    esp_world_t(ImDrawList* draw);
+};
 
 class c_esp {
 public:
@@ -42,31 +70,4 @@ public:
 
     void process_player(ImDrawList* draw, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const;
     void process_world(ImDrawList* draw, C_CSGameRules* game_rules, C_PlantedC4* bomb, const player_t& local_player, const matrix_t& view_matrix) const;
-};
-
-struct esp_player_t {
-    ImDrawList* draw{};
-
-    ImRect bounds{};
-
-    ImVec2 rect_size{};
-    ImRect rect_bounds{};
-
-    void tracer() const;
-    void rectangle(const vector3_t& player_pos, const vector3_t& player_top, const matrix_t& view_matrix) const;
-    void health(int health, int health_max, float font_size) const;
-    void nickName(const std::string& name, float font_size) const;
-    void skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const;
-    void weapon(const std::string& weapon_icon, const std::string& weapon_name, int ammo, int ammo_max, bool reloading, float font_size) const;
-    void flags(bool is_defusing, bool is_scoped, float font_size) const;    
-
-    esp_player_t(ImDrawList* draw, ImRect bounds);
-};
-
-struct esp_world_t {
-    ImDrawList* draw{};
-
-    void bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_t& local_player, const matrix_t& view_matrix, float font_size) const;
-
-    esp_world_t(ImDrawList* draw);
 };

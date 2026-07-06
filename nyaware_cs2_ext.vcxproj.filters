@@ -55,20 +55,8 @@
     <Filter Include="nyaware\data\sdk\source2\structs">
       <UniqueIdentifier>{2edce774-e4b0-4b0b-9d59-69db86f52a15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="nyaware\interface\data">
-      <UniqueIdentifier>{86284c01-cf28-4c58-af92-9c137774d933}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="nyaware\interface\data\fonts">
-      <UniqueIdentifier>{c5f40fb9-8a49-4b81-8c54-8be8ec294909}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="nyaware\interface\data\fonts\bytes">
-      <UniqueIdentifier>{99673e24-bf90-4e00-a51f-4009876bca22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="nyaware\game\legitbot">
       <UniqueIdentifier>{d6508f14-38b2-4a5d-8a3f-6503094624b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="nyaware\interface\data\fonts\bytes\font_awesome">
-      <UniqueIdentifier>{8abaecc8-4b16-4054-8503-724100848d15}</UniqueIdentifier>
     </Filter>
     <Filter Include="nyaware\interface\ui\modules">
       <UniqueIdentifier>{a7ae2c21-467e-4dfc-991a-869533ae6e7c}</UniqueIdentifier>
@@ -78,6 +66,12 @@
     </Filter>
     <Filter Include="nyaware\data\sdk\source2\classes">
       <UniqueIdentifier>{815e9b67-9362-48ad-ba2f-363e8ad3758a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\fonts">
+      <UniqueIdentifier>{cd269609-605b-4a5e-8e8a-d2e2ecf29203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\fonts\bytes">
+      <UniqueIdentifier>{750b5054-9b1a-4b40-8c01-6c53c254b62e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +144,12 @@
     </ClCompile>
     <ClCompile Include="src\nyaware\data\sdk\schema_dumper.cpp">
       <Filter>nyaware\data\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\interface\ui\modules\color.cpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\config.cpp">
+      <Filter>nyaware\data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,12 +240,6 @@
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector4.hpp">
       <Filter>nyaware\data\sdk\source2\structs</Filter>
     </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\include.hpp">
-      <Filter>nyaware\interface\data\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\eurostile-font.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes</Filter>
-    </ClInclude>
     <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_model_skeleton.hpp">
       <Filter>nyaware\data\sdk\cs2\classes</Filter>
     </ClInclude>
@@ -261,18 +255,6 @@
     <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.hpp">
       <Filter>nyaware\data\sdk\cs2\classes</Filter>
     </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\nyaware-font.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes\font_awesome</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\font_awesome\font_awesome_bytes.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes\font_awesome</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\weapon-font.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes</Filter>
-    </ClInclude>
     <ClInclude Include="src\nyaware\interface\ui\modules\modules.hpp">
       <Filter>nyaware\interface\ui\modules</Filter>
     </ClInclude>
@@ -284,9 +266,6 @@
     </ClInclude>
     <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_game.hpp">
       <Filter>nyaware\data\sdk\cs2\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\nyaware\interface\data\fonts\bytes\jacobs-font.hpp">
-      <Filter>nyaware\interface\data\fonts\bytes</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\nyaware\game\visuals\visuals.hpp">
@@ -306,6 +285,36 @@
     </ClInclude>
     <ClInclude Include="src\nyaware\data\sdk\sdk.hpp">
       <Filter>nyaware\data\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\ui\modules\color.hpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\include.hpp">
+      <Filter>nyaware\interface\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\jacobs-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\menu_icons-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\nyaware-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\weapon-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\google_sans-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\montserrat-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\pixel-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\gotham-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

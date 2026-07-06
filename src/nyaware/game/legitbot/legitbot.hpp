@@ -26,5 +26,5 @@ public:
     void draw_fov(ImDrawList* draw, weapon_config_t* weapon_cfg);
     void find_target(const player_t& player, const player_t& local_player, const matrix_t& view_matrix, weapon_config_t* weapon_cfg);
     void auto_aim(const player_t& local_player, weapon_config_t* weapon_cfg);
-	void auto_fire(uintptr_t entity_list, uint8_t local_team, const player_t& local_player, weapon_config_t* weapon_cfg);
+	void auto_fire(uintptr_t entity_list, uint8_t local_team, float current_time, const player_t& local_player, weapon_config_t* weapon_cfg);
 };

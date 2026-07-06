@@ -101,7 +101,7 @@ void c_legitbot::auto_aim(const player_t& local_player, weapon_config_t* weapon_
     if (!cfg.legitbot.enable || !weapon_cfg->aimbot) return;
 
     fov_screen_pos = this->calc_fov(local_player, weapon_cfg);
-    if (weapon_cfg->lmb_check && !GetAsyncKeyState(VK_LBUTTON)) return;
+    if (!weapon_cfg->triggerbot.enable && weapon_cfg->aim_bind != 0 && !GetAsyncKeyState(weapon_cfg->aim_bind)) return;
 
     if (this->target.isValid() && !g.uinterface.ui.is_opened) {
         vector2_t delta = { target_bone_screen.x - g.screen.width * 0.5f, target_bone_screen.y - g.screen.height * 0.5f };
@@ -126,7 +126,7 @@ void c_legitbot::auto_aim(const player_t& local_player, weapon_config_t* weapon_
     }
 }
 
-void c_legitbot::auto_fire(uintptr_t entity_list, uint8_t local_team, const player_t& local_player, weapon_config_t* weapon_cfg) {
+void c_legitbot::auto_fire(uintptr_t entity_list, uint8_t local_team, float current_time, const player_t& local_player, weapon_config_t* weapon_cfg) {
     static float delay_timer = 0.f;
     static float hold_timer = 0.f;
     static float revolver_hold_timer = 0.f;
@@ -196,28 +196,53 @@ void c_legitbot::auto_fire(uintptr_t entity_list, uint8_t local_team, const play
         }
 
         if (is_tap_gun) {
+            static int last_tap_target_id = 0;
+
             int crosshair_id = local_player.pawn->m_iIDEntIndex();
             if (weapon_type == CSWeaponType::WEAPONTYPE_SNIPER_RIFLE && cfg.legitbot.scope_check && !is_scoped) return;
 
             if (crosshair_id > 0) {
                 crosshair_target = C_CSPlayerPawn::get_fromCrosshairID(entity_list, crosshair_id);
-                if (crosshair_target.team != local_team && crosshair_target.pawn->m_iHealth() > 0) {
+
+                const bool valid_target = crosshair_target.team != local_team && crosshair_target.pawn->m_iHealth() > 0;
+
+                if (valid_target) {
+                    if (last_tap_target_id != crosshair_id) {
+                        last_tap_target_id = crosshair_id;
+                        first_shot = true;
+                        delay_timer = 0.f;
+                    }
+
+                    const bool is_ducking = (local_player.pawn->m_fFlags() & (int)flags_t::ducking) != 0;
+                    const float recovery_time = is_ducking ? local_player.weapon.data->m_flRecoveryTimeCrouchFinal() : local_player.weapon.data->m_flRecoveryTimeStandFinal();
+
+                    const float last_shot_time = local_player.weapon.base->m_fLastShotTime();
+                    const bool recoil_recovered = current_time >= last_shot_time + recovery_time;
+
                     if (first_shot) {
                         delay_timer += ImGui::GetIO().DeltaTime;
-                        if (delay_timer >= weapon_cfg->triggerbot.delay) {
+
+                        if (delay_timer >= weapon_cfg->triggerbot.delay && recoil_recovered) {
                             mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
                             mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+
                             first_shot = false;
                             delay_timer = 0.f;
                         }
                     }
-                    else {
+                    else if (recoil_recovered) {
                         mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
                         mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
                     }
                 }
+                else {
+                    last_tap_target_id = 0;
+                    first_shot = true;
+                    delay_timer = 0.f;
+                }
             }
             else {
+                last_tap_target_id = 0;
                 first_shot = true;
                 delay_timer = 0.f;
             }

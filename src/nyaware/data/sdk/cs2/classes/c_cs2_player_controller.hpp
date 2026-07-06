@@ -30,6 +30,10 @@ struct CBasePlayerController : C_BaseEntity {
 };
 
 struct CCSPlayerController : CBasePlayerController {
+	inline uint32_t m_iPing() const {
+		return mem.read<uint32_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_iPing"]);
+	}
+
 	inline uintptr_t m_hPlayerPawn() const {
 		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_hPlayerPawn"]);
 	}

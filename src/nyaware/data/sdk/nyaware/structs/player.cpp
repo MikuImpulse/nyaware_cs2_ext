@@ -6,6 +6,8 @@ player_t::player_t(uintptr_t entity_list, CCSPlayerController* controller, C_CSP
 	this->pawn = pawn;
 
 	this->team = pawn->m_iTeamNum();
+
+	this->ping = controller->m_iPing();
 	this->nickname = controller->m_iszPlayerName();
 
 	this->position = pawn->m_vOldOrigin();

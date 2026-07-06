@@ -21,6 +21,10 @@ struct C_CSWeaponBase : C_BasePlayerWeapon {
 	inline bool m_bSilencerOn() const {
 		return mem.read<bool>(this_cast + c_schema_dumper::schema_offset["C_CSWeaponBase"]["m_bSilencerOn"]);
 	}
+
+	inline float m_fLastShotTime() const {
+		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["C_CSWeaponBase"]["m_fLastShotTime"]);
+	}
 	
 	static C_CSWeaponBase* get(uintptr_t entity_list, uintptr_t handle);
 };

@@ -43,7 +43,7 @@ uintptr_t c_runtime_manager::get_jumpButton(uintptr_t key_buttons_header_ptr) {
     }
 }
 
-void c_runtime_manager::update_map() {
+void c_runtime_manager::update_map(uintptr_t global_vars) {
     static const auto load_maps = []() -> std::vector<std::string> {
         std::vector<std::string> result{};
 
@@ -61,7 +61,6 @@ void c_runtime_manager::update_map() {
 
     static std::vector<std::string> maps = load_maps();
 
-    uintptr_t global_vars = mem.read<uintptr_t>(sig2offset.global_vars);
     if (global_vars) {
         std::string map_name = mem.read_str(mem.read<uintptr_t>(global_vars + 0x188));
 
@@ -112,23 +111,26 @@ void c_runtime_manager::update() {
 	this->players.clear();
     this->spectators.clear();
 
+    dll_t& client_dll = g.modules.client;
+
     static bool was_updated = false;
     if (!was_updated) {
-        this->sig2offset.entity_list = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwEntityList);
+        this->sig2offset.entity_list = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwEntityList);
 
-        this->sig2offset.view_matrix = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwViewMatrix);
+        this->sig2offset.view_matrix = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwViewMatrix);
 
-        this->sig2offset.game_rules = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwGameRules);
-        this->sig2offset.global_vars = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwGlobalVars);
+        this->sig2offset.game_rules = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGameRules);
+        this->sig2offset.global_vars = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGlobalVars);
 
-        this->sig2offset.planted_c4 = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwPlantedC4);
+        this->sig2offset.planted_c4 = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwPlantedC4);
 
-        this->sig2offset.key_buttons = mem.resolve_pattern(g.modules.client.base, g.modules.client.size, signatures::dwKeyButtons);
+        this->sig2offset.key_buttons = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwKeyButtons);
 
         was_updated = true;
     }
 
-    this->update_map();
+    uintptr_t global_vars = mem.read<uintptr_t>(sig2offset.global_vars);
+    this->update_map(global_vars);
 
     uintptr_t entity_list = mem.read<uintptr_t>(sig2offset.entity_list);
     if (entity_list) {
@@ -168,8 +170,12 @@ void c_runtime_manager::update() {
 
         if (local_player.isAlive()) {
             this->local_team = local_player.team;
+
             weapon_cfg = legitbot.get_weaponConfig(local_player.weapon.data->m_WeaponType());
         }
+
+        this->local_ping = local_player.ping;
+        this->local_velocity = local_player.pawn->m_vecAbsVelocity();
 
         for (auto player : players) {
             if (player.isAlive() && player.team != local_team) {
@@ -178,13 +184,12 @@ void c_runtime_manager::update() {
             }
         }
 
-        for (auto name : spectators) {
-            LOGD("%s spectating you", name.c_str());
-        }
+        //for (auto name : spectators) {
+        //    LOGD("%s spectating you", name.c_str());
+        //}
 
         this->esp.process_world(draw, mem.read<C_CSGameRules*>(sig2offset.game_rules), mem.read<C_PlantedC4*>(mem.read<uintptr_t>(sig2offset.planted_c4)), local_player, view_matrix);
         
-        this->visuals.draw_speed(draw, local_player);
         this->visuals.anti_flash(local_player);
         this->visuals.change_fov(local_player);
 
@@ -194,13 +199,14 @@ void c_runtime_manager::update() {
                 this->legitbot.auto_aim(local_player, weapon_cfg);
             }
 
-            this->legitbot.auto_fire(entity_list, local_team, local_player, weapon_cfg);
+            this->legitbot.auto_fire(entity_list, local_team, mem.read<float>(global_vars + 0x30), local_player, weapon_cfg);
         }
 
         this->legitbot.target = {};
         this->legitbot.target_bone_screen = {};
         this->legitbot.metric.best = FLT_MAX;
 
+        this->functions.force_crosshair();
         this->functions.bunny_hop(local_player, get_jumpButton(sig2offset.key_buttons));
     }
 }

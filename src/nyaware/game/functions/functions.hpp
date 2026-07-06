@@ -6,5 +6,6 @@ class c_functions {
 private:
 	uintptr_t keybtns{};
 public:
+	void force_crosshair();
 	void bunny_hop(const player_t& local_player, uintptr_t jump_button);
 };

@@ -102,6 +102,62 @@ uintptr_t c_memory_manager::resolve_pattern(uintptr_t module_base, size_t module
 	return 0;
 }
 
+int c_memory_manager::patch(uintptr_t address_rva, const std::vector<uint8_t>& bytes, uintptr_t module_base) {
+	if (!this->processHandle || !address_rva || bytes.empty()) return -1;
+
+	uintptr_t address = module_base ? module_base + address_rva : address_rva;
+	std::vector<uint8_t> original(bytes.size());
+
+	if (!this->read(address, original.data(), static_cast<int>(original.size()))) return -1;
+
+	DWORD old_protect{};
+	if (!VirtualProtectEx(this->processHandle, reinterpret_cast<void*>(address), bytes.size(), PAGE_EXECUTE_READWRITE, &old_protect)) return -1;
+
+	NTSTATUS status = NtWriteVirtualMemory(this->processHandle, reinterpret_cast<void*>(address), const_cast<uint8_t*>(bytes.data()),
+		static_cast<ULONG>(bytes.size()), nullptr);
+
+	DWORD temp{};
+	VirtualProtectEx(this->processHandle, reinterpret_cast<void*>(address), bytes.size(), old_protect, &temp);
+	FlushInstructionCache(this->processHandle, reinterpret_cast<void*>(address), bytes.size());
+
+	if (status != 0) return -1;
+
+	patch_t patch{};
+	patch.address = address;
+	patch.original_bytes = original;
+	patch.patched_bytes = bytes;
+	patch.restored = false;
+
+	this->patches.push_back(patch);
+
+	return static_cast<int>(this->patches.size() - 1);
+}
+
+bool c_memory_manager::restore(int patch_index) {
+	if (!this->processHandle) return false;
+
+	if (patch_index < 0 || patch_index >= static_cast<int>(this->patches.size())) return false;
+
+	patch_t& patch = this->patches[patch_index];
+
+	if (patch.restored || !patch.address || patch.original_bytes.empty())
+		return false;
+
+	DWORD old_protect{};
+	if (!VirtualProtectEx(this->processHandle, reinterpret_cast<void*>(patch.address), patch.original_bytes.size(), PAGE_EXECUTE_READWRITE, &old_protect)) return false;
+
+	NTSTATUS status = NtWriteVirtualMemory(this->processHandle, reinterpret_cast<void*>(patch.address), patch.original_bytes.data(), static_cast<ULONG>(patch.original_bytes.size()), nullptr);
+
+	DWORD temp{};
+	VirtualProtectEx(this->processHandle, reinterpret_cast<void*>(patch.address), patch.original_bytes.size(), old_protect, &temp);
+	FlushInstructionCache(this->processHandle, reinterpret_cast<void*>(patch.address), patch.original_bytes.size());
+
+	if (status != 0) return false;
+
+	patch.restored = true;
+	return true;
+}
+
 bool c_memory_manager::init(int process_id) {
 	HMODULE ntdll_handle = GetModuleHandleA("ntdll.dll");
 	if (ntdll_handle) {

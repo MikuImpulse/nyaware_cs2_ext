@@ -119,4 +119,12 @@ struct CCSWeaponBaseVData {
     inline std::string m_szName() const {
         return mem.read_str(mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_szName"]));
     }
+
+	inline float m_flRecoveryTimeCrouchFinal() const {
+		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_flRecoveryTimeCrouchFinal"]);
+	}
+
+	inline float m_flRecoveryTimeStandFinal() const {
+		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_flRecoveryTimeStandFinal"]);
+	}
 };

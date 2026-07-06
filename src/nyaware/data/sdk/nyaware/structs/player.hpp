@@ -9,6 +9,8 @@ struct player_t {
 	C_CSPlayerPawn* pawn{};
 
 	uint8_t team{};
+
+	uint32_t ping{};
 	std::string nickname{};
 
 	vector3_t position{};
