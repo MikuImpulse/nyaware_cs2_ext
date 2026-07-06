@@ -1,7 +1,6 @@
 #include "functions.hpp"
 
 #include "data/globals.hpp"
-#include "data/patterns.hpp"
 #include "data/config.hpp"
 #include "utils/memory.hpp"
 
@@ -10,7 +9,7 @@ void c_functions::force_crosshair() {
     static int crosshair_patch = -1;
 
     if (cfg.visuals.force_crosshair && crosshair_patch == -1) {
-        crosshair_patch = mem.patch(mem.find_pattern(client_dll.base, client_dll.size, signatures::dwDrawCrosshair),
+        crosshair_patch = mem.patch(mem.find_pattern(client_dll.base, client_dll.size, "83 38 ?? 74 ?? b0 ?? 48 8b 5c 24"),
             std::vector<uint8_t>(3, 0x90), client_dll.base);
     }
     else if (!cfg.visuals.force_crosshair && crosshair_patch != -1) {

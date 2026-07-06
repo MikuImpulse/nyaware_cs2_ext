@@ -12,5 +12,4 @@ namespace signatures {
     inline const char* dwPlantedC4 = "48 8B 0D ? ? ? ? 49 C1 E1 ? F7 05 ? ? ? ? ? ? ? ? 4C 63 C3 0F 94 C2 49 C1 E0 ? FF 15 ? ? ? ? 48 8B 74 24";
     inline const char* dwViewMatrix = "48 8D 0D ? ? ? ? 48 89 44 24 ? 48 89 4C 24 ? 4C 8D 0D";
     inline const char* dwKeyButtons = "48 8B 15 ? ? ? ? 48 85 D2 74 ? 48 8B 02 48 85 C0";
-    inline const char* dwDrawCrosshair = "83 38 ?? 74 ?? B0 ?? 48 8B 5C 24";
 }
