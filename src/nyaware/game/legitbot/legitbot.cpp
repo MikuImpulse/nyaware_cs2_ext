@@ -16,7 +16,7 @@ ImVec2 c_legitbot::calc_fov(const player_t& local_player, weapon_config_t* weapo
     ImVec2 center = g.screen.centerToImVec2();
 
     if (local_player.pawn->m_iShotsFired() > 1 && weapon_cfg->rcs_strength > 0) {
-        vector3_t punch = local_player.pawn->m_pAimPunchServices()->m_predictableBaseAngle();
+        vector3_t punch = local_player.pawn->m_pAimPunchServices()->m_aimPunchCache();
         punch *= weapon_cfg->rcs_strength;
 
         float fov_rad = local_player.controller->m_iDesiredFOV() * (3.14159f / 180.0f) / 2.0f;
@@ -110,7 +110,7 @@ void c_legitbot::auto_aim(const player_t& local_player, weapon_config_t* weapon_
         float smooth = weapon_cfg->smooth;
 
         if (local_player.pawn->m_iShotsFired() > 1 && weapon_cfg->rcs_strength > 0) {
-            vector3_t punch = local_player.pawn->m_pAimPunchServices()->m_predictableBaseAngle();
+            vector3_t punch = local_player.pawn->m_pAimPunchServices()->m_aimPunchCache();
             punch *= weapon_cfg->rcs_strength;
 
             float fov_rad = local_player.controller->m_iDesiredFOV() * (3.14159f / 180.0f) / 2.0f;

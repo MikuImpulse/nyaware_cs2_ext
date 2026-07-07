@@ -6,6 +6,8 @@
 #include "c_base_player_weapon.hpp"
 
 #include "data/sdk/schema_dumper.hpp"
+#include "data/sdk/source2/structs/utl_vector.hpp"
+
 #include "utils/memory.hpp"
 
 struct CPlayer_WeaponServices {
@@ -15,8 +17,8 @@ struct CPlayer_WeaponServices {
 };
 
 struct CCSPlayer_AimPunchServices {
-	inline vector3_t m_predictableBaseAngle() const {
-		return mem.read<vector3_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayer_AimPunchServices"]["m_predictableBaseAngle"]);
+	inline vector3_t m_aimPunchCache() const {
+		return mem.read<c_utl_vector>(this_cast + 0x88).to_vector3(); // no in schema
 	}
 };
 

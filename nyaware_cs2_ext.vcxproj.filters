@@ -316,6 +316,9 @@
     <ClInclude Include="src\nyaware\interface\fonts\bytes\gotham-font.hpp">
       <Filter>nyaware\interface\fonts\bytes</Filter>
     </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\utl_vector.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="nyaware_cs2_ext.rc" />

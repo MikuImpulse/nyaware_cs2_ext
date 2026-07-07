@@ -79,6 +79,7 @@
     <ClInclude Include="src\nyaware\data\sdk\source2\include.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\source2.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\triangle.hpp" />
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\utl_vector.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector2.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector3.hpp" />
     <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector4.hpp" />
