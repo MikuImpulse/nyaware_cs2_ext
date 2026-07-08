@@ -177,9 +177,11 @@ void c_runtime_manager::update() {
         this->local_ping = local_player.ping;
         this->local_velocity = local_player.pawn->m_vecAbsVelocity();
 
+        float current_time = mem.read<float>(global_vars + 0x30);
+
         for (auto player : players) {
             if (player.isAlive() && player.team != local_team) {
-                this->esp.process_player(draw, player, local_player, view_matrix);
+                this->esp.process_player(draw, current_time, player, local_player, view_matrix);
                 if (local_player.isAlive() && weapon_cfg) this->legitbot.find_target(player, local_player, view_matrix, weapon_cfg);
             }
         }
@@ -199,7 +201,7 @@ void c_runtime_manager::update() {
                 this->legitbot.auto_aim(local_player, weapon_cfg);
             }
 
-            this->legitbot.auto_fire(entity_list, local_team, mem.read<float>(global_vars + 0x30), local_player, weapon_cfg);
+            this->legitbot.auto_fire(entity_list, local_team, current_time, local_player, weapon_cfg);
         }
 
         this->legitbot.target = {};

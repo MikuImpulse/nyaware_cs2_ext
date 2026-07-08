@@ -29,6 +29,10 @@ struct C_BasePlayerPawn : C_BaseCombatCharacter {
 };
 
 struct C_CSPlayerPawnBase : C_BasePlayerPawn {
+	inline float m_flFlashBangTime() const {
+		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["C_CSPlayerPawnBase"]["m_flFlashBangTime"]);
+	}
+
 	inline float m_flFlashDuration() const {
 		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["C_CSPlayerPawnBase"]["m_flFlashDuration"]);
 	}

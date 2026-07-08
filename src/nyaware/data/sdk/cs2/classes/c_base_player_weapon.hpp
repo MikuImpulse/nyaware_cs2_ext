@@ -28,3 +28,9 @@ struct C_CSWeaponBase : C_BasePlayerWeapon {
 	
 	static C_CSWeaponBase* get(uintptr_t entity_list, uintptr_t handle);
 };
+
+struct C_C4 : C_CSWeaponBase {
+	inline bool m_bStartedArming() const {
+		return mem.read<bool>(this_cast + c_schema_dumper::schema_offset["C_C4"]["m_bStartedArming"]);
+	}
+};

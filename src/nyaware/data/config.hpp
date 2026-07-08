@@ -88,8 +88,8 @@ struct config {
                 struct {
                     bool draw = false;
 
-                    std::vector<bool> modes = { true, true, true };
-                    std::vector<ImColor> colors = { {255, 255, 255, 255}, {255, 255, 255, 255}, {255, 255, 255, 255} };
+                    std::vector<bool> modes = { true, true, true, true, true };
+                    std::vector<ImColor> colors = { {255, 255, 255, 255}, {255, 255, 255, 255}, {255, 255, 255, 255}, {255, 255, 255, 255}, {255, 255, 255, 255} };
                 } flags;
             } player;
 

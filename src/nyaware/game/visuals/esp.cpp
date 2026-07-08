@@ -289,11 +289,18 @@ void esp_player_t::weapon(const std::string& weapon_icon, const std::string& wea
     }
 }
 
-void esp_player_t::flags(bool is_defusing, bool is_scoped, uint32_t ping, float font_size) const {
+void esp_player_t::flags(bool is_planting, bool is_defusing, bool is_scoped, float flashbang_time, uint32_t ping, float current_time, float font_size) const {
+    const char* planting_str = "planting";
     const char* defusing_str = "defusing";
     const char* scoped_str = "in scope";
 
+    const float flash_left = std::max<float>(0.f, flashbang_time - current_time);
+
+    std::string blind_str = std::format("blind for {:.1f} sec", flash_left);
     std::string ping_str = std::format("{} ms", ping);
+
+    ImVec2 planting_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, planting_str);
+    ImVec2 planting_pos{};
 
     ImVec2 defusing_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, defusing_str);
     ImVec2 defusing_pos{};
@@ -301,36 +308,54 @@ void esp_player_t::flags(bool is_defusing, bool is_scoped, uint32_t ping, float 
     ImVec2 scoped_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, scoped_str);
     ImVec2 scoped_pos{};
 
+    ImVec2 blind_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, blind_str.c_str());
+    ImVec2 blind_pos{};
+
     ImVec2 ping_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, ping_str.c_str());
     ImVec2 ping_pos{};
 
-    const bool draw_defusing = cfg.visuals.esp.player.flags.modes[0] && is_defusing;
-    const bool draw_scoped = cfg.visuals.esp.player.flags.modes[1] && is_scoped;
+    const bool draw_planting = cfg.visuals.esp.player.flags.modes[0] && is_planting;
+    const bool draw_defusing = cfg.visuals.esp.player.flags.modes[1] && is_defusing;
+    const bool draw_scoped = cfg.visuals.esp.player.flags.modes[2] && is_scoped;
+    const bool draw_blind = cfg.visuals.esp.player.flags.modes[3] && flash_left > 0.f;
+    const bool draw_ping = cfg.visuals.esp.player.flags.modes[4];
+
+    const float action_height =
+        (draw_planting ? planting_size.y : 0.f) +
+        (draw_defusing ? defusing_size.y : 0.f);
 
     switch (cfg.visuals.esp.player.rect.mode) {
-        case 0: case 1:
-            defusing_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y };
-            scoped_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (draw_defusing ? defusing_size.y : 0.f) };
-            ping_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (draw_defusing ? defusing_size.y : 0.f) + (draw_scoped ? scoped_size.y : 0.f) };
+    case 0: case 1:
+        planting_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y };
+        defusing_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + (draw_planting ? planting_size.y : 0.f) };
+        scoped_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + action_height };
+        blind_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + action_height + (draw_scoped ? scoped_size.y : 0.f) };
+        ping_pos = { rect_bounds.Max.x + 3.f, rect_bounds.Min.y + action_height + (draw_scoped ? scoped_size.y : 0.f) + (draw_blind ? blind_size.y : 0.f) };
+        break;
 
-            break;
-
-        case 2:
-            defusing_pos = { bounds.Min.x - defusing_size.x * 0.5f, bounds.Min.y - 30.f - defusing_size.y };
-            scoped_pos = { bounds.Min.x - scoped_size.x * 0.5f, bounds.Min.y - 30.f - (draw_defusing ? defusing_size.y : 0.f) - scoped_size.y };
-            ping_pos = { bounds.Min.x - ping_size.x * 0.5f, bounds.Min.y - 30.f - (draw_defusing ? defusing_size.y : 0.f) - (draw_scoped ? scoped_size.y : 0.f) - ping_size.y};
-
-            break;
+    case 2:
+        planting_pos = { bounds.Min.x - planting_size.x * 0.5f, bounds.Min.y - 30.f - planting_size.y };
+        defusing_pos = { bounds.Min.x - defusing_size.x * 0.5f, bounds.Min.y - 30.f - (draw_planting ? planting_size.y : 0.f) - defusing_size.y };
+        scoped_pos = { bounds.Min.x - scoped_size.x * 0.5f, bounds.Min.y - 30.f - action_height - scoped_size.y };
+        blind_pos = { bounds.Min.x - blind_size.x * 0.5f, bounds.Min.y - 30.f - action_height - (draw_scoped ? scoped_size.y : 0.f) - blind_size.y };
+        ping_pos = { bounds.Min.x - ping_size.x * 0.5f, bounds.Min.y - 30.f - action_height - (draw_scoped ? scoped_size.y : 0.f) - (draw_blind ? blind_size.y : 0.f) - ping_size.y };
+        break;
     }
 
+    if (draw_planting)
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, planting_pos, cfg.visuals.esp.player.flags.colors[0], planting_str);
+
     if (draw_defusing)
-        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, defusing_pos, cfg.visuals.esp.player.flags.colors[0], defusing_str);
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, defusing_pos, cfg.visuals.esp.player.flags.colors[1], defusing_str);
 
     if (draw_scoped)
-        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, scoped_pos, cfg.visuals.esp.player.flags.colors[1], scoped_str);
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, scoped_pos, cfg.visuals.esp.player.flags.colors[2], scoped_str);
 
-    if (cfg.visuals.esp.player.flags.modes[2])
-        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, ping_pos, cfg.visuals.esp.player.flags.colors[2], ping_str.c_str());
+    if (draw_blind)
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, blind_pos, cfg.visuals.esp.player.flags.colors[3], blind_str.c_str());
+
+    if (draw_ping)
+        c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, ping_pos, cfg.visuals.esp.player.flags.colors[4], ping_str.c_str());
 }
 
 esp_player_t::esp_player_t(ImDrawList* draw, ImRect bounds) {
@@ -433,7 +458,7 @@ std::pair<int, int> c_esp::calc_bomb(const std::string& map) {
     static const auto fnv1a = [](const char* str, uint32_t hash = 2166136261UL) {
         auto impl = [](auto& self, const char* s, uint32_t h) -> uint32_t {
             return *s ? self(self, s + 1, (h ^ *s) * 16777619ULL) : h;
-            };
+        };
 
         return impl(impl, str, hash);
     };
@@ -518,7 +543,7 @@ void c_esp::draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, 
     draw->AddText(font, font_size, position, color, text);
 }
 
-void c_esp::process_player(ImDrawList* draw, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const {
+void c_esp::process_player(ImDrawList* draw, float current_time, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const {
     if (!player.isAlive()) return;
 
     vector3_t player_root = player.position;
@@ -539,7 +564,7 @@ void c_esp::process_player(ImDrawList* draw, const player_t& player, const playe
         if (cfg.visuals.esp.player.nickName.draw) esp_p.nickName(player.nickname, 13.f);
         if (cfg.visuals.esp.player.skeleton.draw) esp_p.skeleton(player.pawn, local_player.isAlive(), local_player.top_position, view_matrix);
         if (cfg.visuals.esp.player.weapon.draw) esp_p.weapon(player.weapon.icon, player.weapon.name, player.weapon.base->m_iClip1(), player.weapon.data->m_iMaxClip1(), player.weapon.base->m_bInReload(), 13.f);
-        if (cfg.visuals.esp.player.flags.draw) esp_p.flags(player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), player.ping, 13.f);
+        if (cfg.visuals.esp.player.flags.draw) esp_p.flags((player.weapon.name == "C4" ? ((C_C4*)player.weapon.base)->m_bStartedArming() : false), player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), player.pawn->m_flFlashBangTime(), player.ping, current_time, 13.f);
     }
     else {
         // may be offscreen arrows

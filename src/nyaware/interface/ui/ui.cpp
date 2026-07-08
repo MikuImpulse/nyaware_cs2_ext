@@ -101,27 +101,25 @@ void c_user_interface::watermark() {
 
     float velocity_meters = std::sqrt((g.runtime.local_velocity.x * g.runtime.local_velocity.x + g.runtime.local_velocity.y * g.runtime.local_velocity.y)) / 39.37f;
 
-    std::string watermark_elements = std::format("{}{}{}{}{}", cfg.ui.watermark.elements[0] ? std::format(" | {}:{:02d}:{:02d}", lt.wHour, lt.wMinute, lt.wSecond) : "",
-        cfg.ui.watermark.elements[1] ? std::format(" | {} FPS", fps) : "",
-        cfg.ui.watermark.elements[2] ? std::format(" | {} MB", get_memory_mb()) : "",
-        cfg.ui.watermark.elements[3] ? std::format(" | {:.1f} m/s", velocity_meters) : "",
-        cfg.ui.watermark.elements[4] ? std::format(" | {} ms", g.runtime.local_ping) : "");
+    std::string watermark_elements = std::format("{} {}{}{}{}{}", NYAWARE_LOGO,
+        cfg.ui.watermark.elements[0] ? std::format("  {} {}:{:02d}:{:02d}", ICON_CLOCK, lt.wHour, lt.wMinute, lt.wSecond) : "",
+        cfg.ui.watermark.elements[1] ? std::format("  {} {} FPS", ICON_WINDOW, fps) : "",
+        cfg.ui.watermark.elements[2] ? std::format("  {} {} MB", ICON_RAM, get_memory_mb()) : "",
+        cfg.ui.watermark.elements[3] ? std::format("  {} {:.1f} m/s", ICON_METER, velocity_meters) : "",
+        cfg.ui.watermark.elements[4] ? std::format("  {} {} ms", ICON_GLOBE, g.runtime.local_ping) : "");
 
     ImVec2 elements_size = ImGui::CalcTextSize(watermark_elements.c_str());
-    ImVec2 logo_size = nyaware_logo_font->CalcTextSizeA(13.f, FLT_MAX, 0.f, "A");
-
     ImVec2 elements_pos = ImVec2(water_pos.x - elements_size.x * 0.5f, water_pos.y - elements_size.y * 0.5f);
-    ImVec2 logo_pos = ImVec2(water_pos.x - logo_size.x * 0.5f - elements_size.x * 0.5f, water_pos.y - elements_size.y * 0.5f);
 
     ImVec4 window_color = style.Colors[ImGuiCol_WindowBg];
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.f, 12.f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12.f, 12.f));
 
-    draw->AddRectFilled(ImVec2(water_pos.x - style.WindowPadding.x - elements_size.x * 0.5f - logo_size.x * 0.5f, water_pos.y - style.WindowPadding.y - logo_size.y * 0.5f),
-        ImVec2(water_pos.x + style.WindowPadding.x + elements_size.x * 0.5f + logo_size.x * 0.5f, water_pos.y + style.WindowPadding.y + logo_size.y * 0.5f),
+    draw->AddRectFilled(ImVec2(water_pos.x - style.WindowPadding.x - elements_size.x * 0.5f, water_pos.y - style.WindowPadding.y - elements_size.y * 0.5f),
+        ImVec2(water_pos.x + style.WindowPadding.x + elements_size.x * 0.5f, water_pos.y + style.WindowPadding.y + elements_size.y * 0.5f),
         ImGui::ColorConvertFloat4ToU32(ImVec4(window_color.x, window_color.y, window_color.z, 0.7f)), style.WindowRounding);
 
-    draw->AddText(nyaware_logo_font, 13.f, logo_pos, ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]), "A");
-    draw->AddText(ImVec2(logo_pos.x + logo_size.x, elements_pos.y), ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]), watermark_elements.c_str());
+    draw->AddText(nyaware_logo_font, 13.f, elements_pos, ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]), "A");
+    draw->AddText(elements_pos, ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]), watermark_elements.c_str());
 
     ImGui::PopStyleVar();
 }
@@ -495,7 +493,7 @@ void c_user_interface::render() {
         ImGui::Separator();
         ui_widgets.checkboxColored("Weapon", &cfg.visuals.esp.player.weapon.draw, { &cfg.visuals.esp.player.weapon.colors[0], &cfg.visuals.esp.player.weapon.colors[1], &cfg.visuals.esp.player.weapon.colors[2] });
         ImGui::Separator();
-        ui_widgets.checkboxColored("Flags", &cfg.visuals.esp.player.flags.draw, { &cfg.visuals.esp.player.flags.colors[0], &cfg.visuals.esp.player.flags.colors[1], &cfg.visuals.esp.player.flags.colors[2] });
+        ui_widgets.checkboxColored("Flags", &cfg.visuals.esp.player.flags.draw, { &cfg.visuals.esp.player.flags.colors[0], &cfg.visuals.esp.player.flags.colors[1], &cfg.visuals.esp.player.flags.colors[2], &cfg.visuals.esp.player.flags.colors[3], &cfg.visuals.esp.player.flags.colors[4] });
 
         ui_widgets.endChild();
 
@@ -518,7 +516,7 @@ void c_user_interface::render() {
         ImGui::Separator();
         ui_widgets.multiCombo("Weapon elements", { "Icon", "Name", "Ammo" }, cfg.visuals.esp.player.weapon.modes);
         ImGui::Separator();
-        ui_widgets.multiCombo("Player flags", { "Defuse", "Scope", "Ping" }, cfg.visuals.esp.player.flags.modes);
+        ui_widgets.multiCombo("Player flags", { "Plant", "Defuse", "Scope", "Blind", "Ping"}, cfg.visuals.esp.player.flags.modes);
 
         ui_widgets.endChild();
 
@@ -881,6 +879,17 @@ void c_user_interface::fonts() {
         main_cfg.GlyphRanges = io.Fonts->GetGlyphRangesCyrillic();
 
         io.Fonts->AddFontFromMemoryTTF(google_sans_font, sizeof(google_sans_font), main_cfg.SizePixels, &main_cfg);
+
+        ImFontConfig icons_cfg{};
+        icons_cfg.MergeMode = true;
+        icons_cfg.PixelSnapH = true;
+        icons_cfg.FontDataOwnedByAtlas = false;
+        icons_cfg.GlyphOffset.y = 1.0f;
+        icons_cfg.SizePixels = 13.f;
+
+        static const ImWchar icon_ranges[] = { 0xE100, 0xE109, 0 };
+
+        io.Fonts->AddFontFromMemoryTTF(watermark_icons_font, sizeof(watermark_icons_font), icons_cfg.SizePixels, &icons_cfg, icon_ranges);
 
         /* --------------------------------------------------------------------------------------- */
         nyaware_logo_font = io.Fonts->AddFontFromMemoryTTF(nyaware_logo, sizeof(nyaware_logo), 25.f, nullptr);
