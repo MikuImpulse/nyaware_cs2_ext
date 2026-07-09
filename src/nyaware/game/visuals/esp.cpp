@@ -296,7 +296,7 @@ void esp_player_t::flags(bool is_planting, bool is_defusing, bool is_scoped, flo
 
     const float flash_left = std::max<float>(0.f, flashbang_time - current_time);
 
-    std::string blind_str = std::format("blind for {:.1f} sec", flash_left);
+    std::string blind_str = std::format("blind {:.1f}s", flash_left);
     std::string ping_str = std::format("{} ms", ping);
 
     ImVec2 planting_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, planting_str);

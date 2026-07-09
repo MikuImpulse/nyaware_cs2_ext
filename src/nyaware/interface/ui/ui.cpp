@@ -101,7 +101,7 @@ void c_user_interface::watermark() {
 
     float velocity_meters = std::sqrt((g.runtime.local_velocity.x * g.runtime.local_velocity.x + g.runtime.local_velocity.y * g.runtime.local_velocity.y)) / 39.37f;
 
-    std::string watermark_elements = std::format("{} {}{}{}{}{}", NYAWARE_LOGO,
+    std::string watermark_elements = std::format("{}{}{}{}{}{}{}", NYAWARE_LOGO, (std::find(cfg.ui.watermark.elements.begin(), cfg.ui.watermark.elements.end(), true) != cfg.ui.watermark.elements.end() ? " " : ""),
         cfg.ui.watermark.elements[0] ? std::format("  {} {}:{:02d}:{:02d}", ICON_CLOCK, lt.wHour, lt.wMinute, lt.wSecond) : "",
         cfg.ui.watermark.elements[1] ? std::format("  {} {} FPS", ICON_WINDOW, fps) : "",
         cfg.ui.watermark.elements[2] ? std::format("  {} {} MB", ICON_RAM, get_memory_mb()) : "",

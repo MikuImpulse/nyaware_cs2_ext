@@ -122,7 +122,8 @@ void c_runtime_manager::update() {
         this->sig2offset.game_rules = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGameRules);
         this->sig2offset.global_vars = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGlobalVars);
 
-        this->sig2offset.planted_c4 = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwPlantedC4);
+        //this->sig2offset.planted_c4 = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwPlantedC4);
+        //LOGD("0x%lx", sig2offset.planted_c4);
 
         this->sig2offset.key_buttons = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwKeyButtons);
 
