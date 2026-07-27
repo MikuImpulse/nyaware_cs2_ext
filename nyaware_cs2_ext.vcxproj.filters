@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="nyaware">
+      <UniqueIdentifier>{3624603b-1731-416f-b8e8-6af36e5e6c60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="includes">
+      <UniqueIdentifier>{237d88e5-5bd1-4395-bc19-bc5ab1a03903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\core">
+      <UniqueIdentifier>{17221710-1758-45c8-aabb-359557818a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data">
+      <UniqueIdentifier>{32a93093-4814-4e37-9add-210ffff49303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\utils">
+      <UniqueIdentifier>{0cb9868d-7bc0-4c52-a21d-37b321a01195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="includes\imgui">
+      <UniqueIdentifier>{bf3e50da-cab1-45d6-840f-17a0e2972bc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="includes\imgui\backends">
+      <UniqueIdentifier>{858ff4d7-3d19-43f6-8dba-2ffb8e180a57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface">
+      <UniqueIdentifier>{a530f7f3-9427-44fd-a8df-9bdacd51d3af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\ui">
+      <UniqueIdentifier>{13495bcd-9ed3-46f2-b1f5-d8d106290a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\game">
+      <UniqueIdentifier>{59f9fa95-80cb-42c4-9263-fd33b03dd4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\game\visuals">
+      <UniqueIdentifier>{39673228-f85a-4f24-bb8e-02dc4f84444e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk">
+      <UniqueIdentifier>{5e39073a-3eef-4d34-acd8-71ec1460d601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\cs2">
+      <UniqueIdentifier>{797ac69b-5345-4e78-8ed2-148bc7631765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\nyaware">
+      <UniqueIdentifier>{24f785cb-00cc-4fef-90b1-27303252a1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\nyaware\structs">
+      <UniqueIdentifier>{55138bf2-2b8e-4b93-bdad-01a4457aac78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\cs2\classes">
+      <UniqueIdentifier>{69c71e7d-023e-43bc-9a22-4e67ddfeeb35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\source2">
+      <UniqueIdentifier>{d9c76d9d-b2e9-4669-8518-f19d3ef308f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\source2\structs">
+      <UniqueIdentifier>{2edce774-e4b0-4b0b-9d59-69db86f52a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\game\legitbot">
+      <UniqueIdentifier>{d6508f14-38b2-4a5d-8a3f-6503094624b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\ui\modules">
+      <UniqueIdentifier>{a7ae2c21-467e-4dfc-991a-869533ae6e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\game\functions">
+      <UniqueIdentifier>{13018169-8d53-45f0-8998-e86e75ff0877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\data\sdk\source2\classes">
+      <UniqueIdentifier>{815e9b67-9362-48ad-ba2f-363e8ad3758a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\fonts">
+      <UniqueIdentifier>{cd269609-605b-4a5e-8e8a-d2e2ecf29203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyaware\interface\fonts\bytes">
+      <UniqueIdentifier>{750b5054-9b1a-4b40-8c01-6c53c254b62e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\nyaware\core\core.cpp">
+      <Filter>nyaware\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\utils\memory.cpp">
+      <Filter>nyaware\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\imgui.cpp">
+      <Filter>includes\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\imgui_demo.cpp">
+      <Filter>includes\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\imgui_draw.cpp">
+      <Filter>includes\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\imgui_tables.cpp">
+      <Filter>includes\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\imgui_widgets.cpp">
+      <Filter>includes\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>includes\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="src\includes\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>includes\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\interface\interface.cpp">
+      <Filter>nyaware\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\interface\ui\ui.cpp">
+      <Filter>nyaware\interface\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\game\runtime.cpp">
+      <Filter>nyaware\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\game\visuals\esp.cpp">
+      <Filter>nyaware\game\visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\nyaware\structs\player.cpp">
+      <Filter>nyaware\data\sdk\nyaware\structs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\nyaware\structs\physics.cpp">
+      <Filter>nyaware\data\sdk\nyaware\structs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_controller.cpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_pawn.cpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.cpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\interface\ui\modules\modules.cpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\game\legitbot\legitbot.cpp">
+      <Filter>nyaware\game\legitbot</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\game\visuals\visuals.cpp">
+      <Filter>nyaware\game\visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\game\functions\functions.cpp">
+      <Filter>nyaware\game\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\sdk\schema_dumper.cpp">
+      <Filter>nyaware\data\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\interface\ui\modules\color.cpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nyaware\data\config.cpp">
+      <Filter>nyaware\data</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\nyaware\core\core.hpp">
+      <Filter>nyaware\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\globals.hpp">
+      <Filter>nyaware\data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\utils\log.hpp">
+      <Filter>nyaware\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\utils\memory.hpp">
+      <Filter>nyaware\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imconfig.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imgui.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imgui_internal.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imstb_rectpack.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imstb_textedit.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\imstb_truetype.h">
+      <Filter>includes\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\backends\imgui_impl_dx11.h">
+      <Filter>includes\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="src\includes\imgui\backends\imgui_impl_win32.h">
+      <Filter>includes\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\interface.hpp">
+      <Filter>nyaware\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\ui\ui.hpp">
+      <Filter>nyaware\interface\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\config.hpp">
+      <Filter>nyaware\data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\game\runtime.hpp">
+      <Filter>nyaware\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\game\visuals\esp.hpp">
+      <Filter>nyaware\game\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\include.hpp">
+      <Filter>nyaware\data\sdk\nyaware</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\structs\player.hpp">
+      <Filter>nyaware\data\sdk\nyaware\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\include.hpp">
+      <Filter>nyaware\data\sdk\cs2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\patterns.hpp">
+      <Filter>nyaware\data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_pawn.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_controller.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_model_entity.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\source2.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector2.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector3.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\include.hpp">
+      <Filter>nyaware\data\sdk\source2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\vector4.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_model_skeleton.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\triangle.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\nyaware\structs\physics.hpp">
+      <Filter>nyaware\data\sdk\nyaware\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_cs2_player_weapon.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_player_weapon.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\ui\modules\modules.hpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_base_c4.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\game\legitbot\legitbot.hpp">
+      <Filter>nyaware\game\legitbot</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\cs2\classes\c_game.hpp">
+      <Filter>nyaware\data\sdk\cs2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\nyaware\game\visuals\visuals.hpp">
+      <Filter>nyaware\game\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\game\functions\functions.hpp">
+      <Filter>nyaware\game\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\classes\input.hpp">
+      <Filter>nyaware\data\sdk\source2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\classes\schema.hpp">
+      <Filter>nyaware\data\sdk\source2\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\schema_dumper.hpp">
+      <Filter>nyaware\data\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\sdk.hpp">
+      <Filter>nyaware\data\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\ui\modules\color.hpp">
+      <Filter>nyaware\interface\ui\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\include.hpp">
+      <Filter>nyaware\interface\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\jacobs-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\menu_icons-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\nyaware-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\weapon-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\google_sans-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\montserrat-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\pixel-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\interface\fonts\bytes\gotham-font.hpp">
+      <Filter>nyaware\interface\fonts\bytes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nyaware\data\sdk\source2\structs\utl_vector.hpp">
+      <Filter>nyaware\data\sdk\source2\structs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nyaware_cs2_ext.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
+  </ItemGroup>
+</Project>
