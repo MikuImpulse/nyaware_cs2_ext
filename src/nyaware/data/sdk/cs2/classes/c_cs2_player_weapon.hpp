@@ -129,12 +129,4 @@ struct CCSWeaponBaseVData {
 	inline float m_flSpread() const {
 		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_flSpread"]);
 	}
-
-	inline float m_flRecoveryTimeCrouchFinal() const {
-		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_flRecoveryTimeCrouchFinal"]);
-	}
-
-	inline float m_flRecoveryTimeStandFinal() const {
-		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["CCSWeaponBaseVData"]["m_flRecoveryTimeStandFinal"]);
-	}
 };
