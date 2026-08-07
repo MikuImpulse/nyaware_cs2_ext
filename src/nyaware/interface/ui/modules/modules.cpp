@@ -194,7 +194,7 @@ bool c_ui_modules::colorEditPreview(const char* label, ImColor* color, const ImR
     border_col = ImLerp(border_col, style.Colors[ImGuiCol_ButtonActive], active_anim);
 
     draw->AddRectFilled(bb.Min, bb.Max, ImGui::GetColorU32(color->Value), style.FrameRounding);
-    draw->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(border_col), style.FrameRounding);
+    draw->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(border_col), style.FrameRounding, ImDrawFlags_None, 1.f);
 
     if (block_preview_item)
         return false;
@@ -382,7 +382,8 @@ bool c_ui_modules::colorEditPreview(const char* label, ImColor* color, const ImR
 
         float hue_cursor_y = hue_bb.Min.y + animated_h * hue_bb.GetHeight();
 
-        popup_draw->AddRectFilled(ImVec2(hue_bb.Min.x - 2.f, hue_cursor_y - 2.f), ImVec2(hue_bb.Max.x + 2.f, hue_cursor_y + 2.f),
+        popup_draw->AddRectFilled(ImVec2(hue_bb.Min.x - 2.f, hue_cursor_y - 2.f),
+            ImVec2(hue_bb.Max.x + 2.f, hue_cursor_y + 2.f),
             ImGui::GetColorU32(style.Colors[ImGuiCol_Text]), 2.f);
 
         ImGui::SetCursorScreenPos(ImVec2(sv_bb.Min.x, sv_bb.Max.y + 8.f));
@@ -744,12 +745,8 @@ bool c_ui_modules::checkboxColored(const char* label, bool* value, const std::ve
     draw->AddRectFilled(switch_bb.Min, switch_bb.Max, ImGui::GetColorU32(bg_col_v), switch_rounding);
 
     float knob_radius = 7.f;
-    float knob_x = ImLerp(
-        switch_bb.Min.x + switch_height * 0.5f,
-        switch_bb.Max.x - switch_height * 0.5f,
-        checked_anim
-    );
 
+    float knob_x = ImLerp(switch_bb.Min.x + switch_height * 0.5f, switch_bb.Max.x - switch_height * 0.5f, checked_anim);
     ImVec2 knob_center(knob_x, switch_bb.Min.y + switch_height * 0.5f);
 
     draw->AddCircleFilled(knob_center, knob_radius, ImGui::GetColorU32(style.Colors[ImGuiCol_CheckMark]), 32);
@@ -781,7 +778,8 @@ bool c_ui_modules::checkboxColored(const char* label, bool* value, const std::ve
 
         if (block_color_preview) {
             draw->AddRectFilled(color_bb.Min, color_bb.Max, ImGui::GetColorU32(colors[i]->Value), style.FrameRounding);
-            draw->AddRect(color_bb.Min, color_bb.Max, ImGui::GetColorU32(style.Colors[ImGuiCol_Border]), style.FrameRounding);
+            draw->AddRect(color_bb.Min, color_bb.Max, ImGui::GetColorU32(style.Colors[ImGuiCol_Border]),
+                style.FrameRounding, ImDrawFlags_None, 1.f);
         }
         else if (colorEditPreview(color_label, colors[i], color_bb)) {
             changed = true;
@@ -983,6 +981,7 @@ bool c_ui_modules::sliderFloat(const char* label, float* value, float min, float
     float height = 38.f;
     float slider_width = 118.f;
     float track_height = 4.f;
+    float slider_hit_half_height = 8.f;
 
     ImVec2 pos = window->DC.CursorPos;
     ImVec2 size = ImVec2(ImGui::GetContentRegionAvail().x, height);
@@ -997,7 +996,8 @@ bool c_ui_modules::sliderFloat(const char* label, float* value, float min, float
             return false;
     }
 
-    ImRect slider_bb(ImVec2(bb.Max.x - slider_width, bb.Min.y + height * 0.5f - 8.f), ImVec2(bb.Max.x, bb.Min.y + height * 0.5f + 8.f));
+    ImRect slider_bb(ImVec2(bb.Max.x - slider_width, bb.Min.y + height * 0.5f - slider_hit_half_height),
+        ImVec2(bb.Max.x, bb.Min.y + height * 0.5f + slider_hit_half_height));
 
     bool hovered = ImGui::IsMouseHoveringRect(slider_bb.Min, slider_bb.Max);
     bool held = false;
@@ -1047,7 +1047,8 @@ bool c_ui_modules::sliderFloat(const char* label, float* value, float min, float
 
     ImVec2 value_size = ImGui::CalcTextSize(value_buf);
 
-    draw->AddText(ImVec2(slider_bb.Min.x - value_size.x - 14.f, bb.Min.y + height * 0.5f - value_size.y * 0.5f), ImGui::GetColorU32(value_col_v), value_buf);
+    draw->AddText(ImVec2(slider_bb.Min.x - value_size.x - 14.f, bb.Min.y + height * 0.5f - value_size.y * 0.5f),
+        ImGui::GetColorU32(value_col_v), value_buf);
 
     float track_y = slider_bb.Min.y + 8.f;
     ImVec2 track_min = ImVec2(slider_bb.Min.x, track_y - track_height * 0.5f);
@@ -1076,6 +1077,7 @@ bool c_ui_modules::sliderInt(const char* label, int* value, int min, int max, co
     float height = 38.f;
     float slider_width = 118.f;
     float track_height = 4.f;
+    float slider_hit_half_height = 8.f;
 
     ImVec2 pos = window->DC.CursorPos;
     ImVec2 size = ImVec2(ImGui::GetContentRegionAvail().x, height);
@@ -1090,7 +1092,8 @@ bool c_ui_modules::sliderInt(const char* label, int* value, int min, int max, co
             return false;
     }
 
-    ImRect slider_bb(ImVec2(bb.Max.x - slider_width, bb.Min.y + height * 0.5f - 8.f), ImVec2(bb.Max.x, bb.Min.y + height * 0.5f + 8.f));
+    ImRect slider_bb(ImVec2(bb.Max.x - slider_width, bb.Min.y + height * 0.5f - slider_hit_half_height),
+        ImVec2(bb.Max.x, bb.Min.y + height * 0.5f + slider_hit_half_height));
 
     bool hovered = ImGui::IsMouseHoveringRect(slider_bb.Min, slider_bb.Max);
     bool held = false;
@@ -1141,7 +1144,8 @@ bool c_ui_modules::sliderInt(const char* label, int* value, int min, int max, co
 
     ImVec2 value_size = ImGui::CalcTextSize(value_buf);
 
-    draw->AddText(ImVec2(slider_bb.Min.x - value_size.x - 14.f, bb.Min.y + height * 0.5f - value_size.y * 0.5f), ImGui::GetColorU32(value_col_v), value_buf);
+    draw->AddText(ImVec2(slider_bb.Min.x - value_size.x - 14.f, bb.Min.y + height * 0.5f - value_size.y * 0.5f),
+        ImGui::GetColorU32(value_col_v), value_buf);
 
     float track_y = slider_bb.Min.y + 8.f;
     ImVec2 track_min = ImVec2(slider_bb.Min.x, track_y - track_height * 0.5f);
@@ -1275,8 +1279,10 @@ bool c_ui_modules::combo(const char* label, int* current_item, const std::vector
 
     ImVec2 arrow_center = ImVec2(frame_bb.Max.x - 13.f, frame_bb.Min.y + combo_height * 0.5f);
 
-    draw->AddTriangleFilled(ImVec2(arrow_center.x - 4.f, arrow_center.y - 2.f + open_anim * 4.f), ImVec2(arrow_center.x + 4.f, arrow_center.y - 2.f + open_anim * 4.f),
-        ImVec2(arrow_center.x, arrow_center.y + 3.f - open_anim * 6.f), ImGui::GetColorU32(style.Colors[ImGuiCol_TextDisabled]));
+    draw->AddTriangleFilled(ImVec2(arrow_center.x - 4.f, arrow_center.y - 2.f + open_anim * 4.f),
+        ImVec2(arrow_center.x + 4.f, arrow_center.y - 2.f + open_anim * 4.f),
+        ImVec2(arrow_center.x, arrow_center.y + 3.f - open_anim * 6.f),
+        ImGui::GetColorU32(style.Colors[ImGuiCol_TextDisabled]));
 
     bool changed = false;
 
@@ -1286,7 +1292,6 @@ bool c_ui_modules::combo(const char* label, int* current_item, const std::vector
     if (items.size() > 1)
         popup_height += static_cast<float>(items.size() - 1) * popup_item_spacing;
 
-    popup_height = ImMin(popup_height, 170.f);
 
     float animated_popup_height = ImMax(1.f, popup_height * open_anim);
 
@@ -1444,13 +1449,17 @@ bool c_ui_modules::multiCombo(const char* label, const std::vector<std::string>&
     ImVec2 preview_pos = ImVec2(frame_bb.Min.x + 9.f, frame_bb.Min.y + combo_height * 0.5f - ImGui::GetTextLineHeight() * 0.5f);
 
     draw->PushClipRect(preview_pos, ImVec2(frame_bb.Max.x - 25.f, frame_bb.Max.y), true);
+
     draw->AddText(preview_pos, ImGui::GetColorU32(style.Colors[ImGuiCol_Text]), preview.c_str());
+
     draw->PopClipRect();
 
     ImVec2 arrow_center = ImVec2(frame_bb.Max.x - 13.f, frame_bb.Min.y + combo_height * 0.5f);
 
-    draw->AddTriangleFilled(ImVec2(arrow_center.x - 4.f, arrow_center.y - 2.f + open_anim * 4.f), ImVec2(arrow_center.x + 4.f, arrow_center.y - 2.f + open_anim * 4.f),
-        ImVec2(arrow_center.x, arrow_center.y + 3.f - open_anim * 6.f), ImGui::GetColorU32(style.Colors[ImGuiCol_TextDisabled]));
+    draw->AddTriangleFilled(ImVec2(arrow_center.x - 4.f, arrow_center.y - 2.f + open_anim * 4.f),
+        ImVec2(arrow_center.x + 4.f, arrow_center.y - 2.f + open_anim * 4.f),
+        ImVec2(arrow_center.x, arrow_center.y + 3.f - open_anim * 6.f),
+        ImGui::GetColorU32(style.Colors[ImGuiCol_TextDisabled]));
 
     bool changed = false;
 
@@ -1460,7 +1469,6 @@ bool c_ui_modules::multiCombo(const char* label, const std::vector<std::string>&
     if (items.size() > 1)
         popup_height += static_cast<float>(items.size() - 1) * popup_item_spacing;
 
-    popup_height = ImMin(popup_height, 180.f);
 
     float animated_popup_height = ImMax(1.f, popup_height * open_anim);
 
@@ -1517,7 +1525,6 @@ bool c_ui_modules::multiCombo(const char* label, const std::vector<std::string>&
                 ImGui::GetColorU32(item_text_col), items[i].c_str());
 
             ImVec2 check_center = ImVec2(item_bb.Max.x - 12.f, item_bb.Min.y + popup_item_height * 0.5f);
-
             popup_draw->AddCircle(check_center, 4.5f, ImGui::GetColorU32(style.Colors[ImGuiCol_TextDisabled]), 24, 1.25f);
 
             if (check_anim > 0.01f) {
@@ -1787,23 +1794,28 @@ bool c_ui_modules::beginChild(const char* str_id, const ImVec2& size, ImGuiChild
         title_offset = text_size.y + style.ItemSpacing.y;
     }
 
-    float fallback_child_height = size.y;
-    if (fallback_child_height > 0.f)
-        fallback_child_height -= title_offset;
-
-    if (fallback_child_height <= 0.f)
-        fallback_child_height = 40.f;
-
     ImGuiStorage* storage = ImGui::GetStateStorage();
 
     ImGuiID target_height_id = makeSubId(id, 1001);
     ImGuiID animated_height_id = makeSubId(id, 1002);
+    ImGuiID is_auto_size_id = makeSubId(id, 1003);
 
-    float target_height = storage->GetFloat(target_height_id, fallback_child_height);
+    bool is_auto_size = (size.y <= 0.f);
+    storage->SetBool(is_auto_size_id, is_auto_size);
+
+    float target_height = 0.f;
+
+    if (is_auto_size) {
+        target_height = storage->GetFloat(target_height_id, 40.f);
+    }
+    else {
+        target_height = size.y - title_offset;
+        target_height = ImMax(target_height, 20.f);
+    }
+
     target_height = ImMax(target_height, 1.f);
 
-    float animated_height = animFloatLinear(animated_height_id, target_height, 650.f);
-
+    float animated_height = animFloat(animated_height_id, target_height, 18.f);
     ImGui::SetCursorPos(ImVec2(cursor_before_label.x, cursor_before_label.y + title_offset));
 
     flags |= ImGuiChildFlags_AlwaysUseWindowPadding;
@@ -1811,7 +1823,6 @@ bool c_ui_modules::beginChild(const char* str_id, const ImVec2& size, ImGuiChild
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(style.WindowPadding.x, 6.f));
 
     bool opened = ImGui::BeginChild(str_id, ImVec2(size.x, animated_height), flags, window_flags);
-
     child_id_stack.push_back(id);
 
     return opened;
@@ -1847,6 +1858,9 @@ void c_ui_modules::endChild() {
 
     if (id != 0) {
         ImGuiStorage* storage = ImGui::GetStateStorage();
-        storage->SetFloat(makeSubId(id, 1001), content_height);
+        bool is_auto_size = storage->GetBool(makeSubId(id, 1003), true);
+
+        if (is_auto_size)
+            storage->SetFloat(makeSubId(id, 1001), content_height);
     }
 }

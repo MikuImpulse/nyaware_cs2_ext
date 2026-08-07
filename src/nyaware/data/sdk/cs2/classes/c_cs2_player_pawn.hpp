@@ -68,5 +68,4 @@ struct C_CSPlayerPawn : C_CSPlayerPawnBase {
 	}
 
 	static C_CSPlayerPawn* get(uintptr_t entity_list, uintptr_t handle);
-	static C_CSPlayerPawn* get_fromCrosshairID(uintptr_t entity_list, uintptr_t crosshair_id);
 };

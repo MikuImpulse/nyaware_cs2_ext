@@ -28,9 +28,7 @@ private:
 
 	player_t local_player{};
 	std::vector<player_t> players{};
-	std::vector<std::string> spectators{};
-
-	uint8_t local_team{};
+	std::vector<spectator_t> spectators{};
 
 	c_esp esp{};
 	c_visuals visuals{};

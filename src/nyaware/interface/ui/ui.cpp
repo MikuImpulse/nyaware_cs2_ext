@@ -30,6 +30,8 @@ weapon_config_t* c_user_interface::get_weaponConfig(int index) {
 void c_user_interface::render_weapon_config(weapon_config_t* config, const char* weapon_name) {
     ui_widgets.checkboxKeyBind("Aimbot", &config->aimbot, &config->aim_bind);
     ImGui::Separator();
+    ui_widgets.checkbox("Humanization (shared)", &cfg.legitbot.humanize);
+    ImGui::Separator();
     ui_widgets.checkbox("Draw FOV", &config->fov.draw);
     ImGui::Separator();
     ui_widgets.sliderFloat("FOV value", &config->fov.value, 0.1f, 360.f, "%.1f");
@@ -525,6 +527,8 @@ void c_user_interface::render() {
         ImGui::SetCursorPosX(child_tabs_size_width + style.WindowPadding.x * 2 + p_esp_child_width + style.ItemSpacing.x + content_offset_x);
         ui_widgets.beginChild("Visuals", ImVec2(ImGui::GetContentRegionAvail().x, 0.f), ImGuiChildFlags_AlwaysUseWindowPadding, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
+        ui_widgets.checkbox("Spectator list", &cfg.visuals.spectator_list.enable);
+        ImGui::Separator();
         ui_widgets.checkbox("Anti flash", &cfg.visuals.anti_flash);
         ImGui::Separator();
         ui_widgets.checkbox("Force crosshair", &cfg.visuals.force_crosshair);
@@ -547,6 +551,8 @@ void c_user_interface::render() {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 
+        ImGui::SetCursorPosY(0.f);
+
         float button_width = (ImGui::GetContentRegionAvail().x - style.ItemSpacing.x * 5) / 6;
         static const char* icons[] = { "`", "w", "A", "~", "C", "y" };
 
@@ -555,7 +561,7 @@ void c_user_interface::render() {
 
             ImVec2 text_size = ImGui::CalcTextSize(icons[i]);
 
-            ImVec2 button_size(button_width, ImGui::GetContentRegionAvail().y);
+            ImVec2 button_size(button_width, 40);
             ImVec2 text_pos = ImGui::GetCursorScreenPos();
             text_pos.x += (button_size.x - text_size.x) * 0.5f;
             text_pos.y += (button_size.y - text_size.y) * 0.5f - 2;
@@ -592,7 +598,7 @@ void c_user_interface::render() {
 
         float p_lbot_child_width = ImGui::GetContentRegionAvail().x * 0.5f;
         float p_lbot_cursor_pos_y = ImGui::GetCursorPosY();
-        ui_widgets.beginChild("##lbot_switchh", ImVec2(p_lbot_child_width, 0.f), ImGuiChildFlags_AlwaysUseWindowPadding);
+        ui_widgets.beginChild("##lbot_switchh", ImVec2(p_lbot_child_width, 0.f), ImGuiChildFlags_AlwaysUseWindowPadding, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
         ui_widgets.checkbox("Master switch##legitbot", &cfg.legitbot.enable);
 
@@ -832,6 +838,7 @@ void c_user_interface::style() {
     style.ScrollbarRounding = 8.f;
 
 	style.WindowPadding = ImVec2(16.f, 16.f);
+    style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
 }
 
 void c_user_interface::colors() {

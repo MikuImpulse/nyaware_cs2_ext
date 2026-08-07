@@ -373,21 +373,9 @@ void esp_world_t::bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_
     static float bomb_timer = 0.f;
     static bool was_active = false;
 
-    ImGui::Text("calling");
-
     if (game_rules->m_bBombPlanted()) {
-        uintptr_t ent_ident = mem.read<uintptr_t>((uintptr_t)c4 + 0x10);
-        if (ent_ident) {
-            std::string m_name = mem.read_str(mem.read<uintptr_t>(ent_ident + 0x20));
-            ImGui::Text("m_name: %s", m_name.c_str());
-        }
-
-
-        ImGui::Text("planted");
         CGameSceneNode* bomb_node = c4->m_pGameSceneNode();
         if (!bomb_node) return;
-
-        ImGui::Text("node");
 
         if (!was_active) {
             bomb_timer = c4->m_flTimerLength();
@@ -413,34 +401,23 @@ void esp_world_t::bomb(C_PlantedC4* c4, C_CSGameRules* game_rules, const player_
         }
 
         vector3_t bomb_pos = bomb_node->m_vecAbsOrigin();
-        ImGui::Text("bomb pos: %f %f %f", bomb_pos.x, bomb_pos.y, bomb_pos.z);
         vector3_t bomb_scr = view_matrix.worldToScreenPoint(g.screen, bomb_pos);
-
-        int damage = 99999;
-        if (!g.runtime.current_map.empty())
-            damage = c_esp::calc_bomb_damage(local_player.position, bomb_pos, local_player.armor.value, g.runtime.current_map);
 
         if (cfg.visuals.esp.world.bomb.draw && bomb_scr.z > 0.f) {
             ImVec2 icon_size = g.fonts.weapon->CalcTextSizeA(font_size, FLT_MAX, 0.f, "E");
             ImVec2 icon_pos = { bomb_scr.x - icon_size.x * 0.5f, bomb_scr.y - icon_size.y * 0.5f };
 
-            std::string damage_str = std::format("damage: {}", damage == 99999 ? "invalid map!" : (local_player.isAlive() ? (local_player.health.value <= damage ? "LETHAL" : std::to_string(damage)) : "you're already dead bruh"));
-
-            ImVec2 damage_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, damage_str.c_str());
-            ImVec2 damage_text_pos = { bomb_scr.x - damage_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y * 0.5f };
-
             std::string timer_str = std::format("time left: {:.1f}s", bomb_timer);
 
             ImVec2 timer_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, timer_str.c_str());
-            ImVec2 timer_text_pos = { bomb_scr.x - timer_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y - timer_text_size.y * 0.5f };
+            ImVec2 timer_text_pos = { bomb_scr.x - timer_text_size.x * 0.5f, bomb_scr.y - icon_size.y - timer_text_size.y * 0.5f };
 
             std::string site_str = std::format("site: {}", bomb_site);
 
             ImVec2 site_text_size = g.fonts.visuals->CalcTextSizeA(font_size, FLT_MAX, 0.f, site_str.c_str());
-            ImVec2 site_text_pos = { bomb_scr.x - site_text_size.x * 0.5f, bomb_scr.y - icon_size.y - damage_text_size.y - timer_text_size.y - site_text_size.y * 0.5f };
+            ImVec2 site_text_pos = { bomb_scr.x - site_text_size.x * 0.5f, bomb_scr.y - icon_size.y - timer_text_size.y - site_text_size.y * 0.5f };
 
             c_esp::draw_outlined_text(draw, g.fonts.weapon, font_size, icon_pos, ImColor(255, 255, 255), "E");
-            c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, damage_text_pos, ImColor(255, 255, 255), damage_str.c_str());
             c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, timer_text_pos, ImColor(255, 255, 255), timer_str.c_str());
             c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, site_text_pos, ImColor(255, 255, 255), site_str.c_str());
         }
@@ -465,84 +442,6 @@ float c_esp::calc_size_by_distance(float size_min, float size_max, float distanc
     float distanceSize = (size_max / distance) * (size_max / 2.0f);
 
     return std::clamp(distanceSize, size_min, size_max);
-}
-
-std::pair<int, int> c_esp::calc_bomb(const std::string& map) {
-    static const auto fnv1a = [](const char* str, uint32_t hash = 2166136261UL) {
-        auto impl = [](auto& self, const char* s, uint32_t h) -> uint32_t {
-            return *s ? self(self, s + 1, (h ^ *s) * 16777619ULL) : h;
-        };
-
-        return impl(impl, str, hash);
-    };
-
-    switch (fnv1a(map.c_str())) {
-    case fnv1a("de_anubis"):
-        return { 450, 1575 };
-    case fnv1a("de_overpass"):
-        return { 650, 2275 };
-    case fnv1a("de_inferno"):
-        return { 600, 2100 };
-    case fnv1a("de_mirage"):
-        return { 650, 2275 };
-    case fnv1a("de_dust2"):
-        return { 700, 2450 };
-    case fnv1a("de_nuke"):
-        return { 650, 2275 };
-    case fnv1a("de_ancient"):
-        return { 650, 2275 };
-    case fnv1a("de_ancient_night"):
-        return { 650, 2275 };
-    case fnv1a("de_train"):
-        return { 500, 1750 };
-    case fnv1a("de_vertigo"):
-        return { 500, 1750 };
-    case fnv1a("de_cache"):
-        return { 600, 2100 };
-    case fnv1a("de_warden"):
-        return { 500, 1750 };
-    case fnv1a("de_stronghold"):
-        return { 650, 2275 };
-    case fnv1a("cs_alpine"):
-        return { 500, 1750 };
-    case fnv1a("cs_office"):
-        return { 500, 1750 };
-    case fnv1a("cs_italy"):
-        return { 500, 1750 };
-    }
-
-    return {};
-}
-
-int c_esp::calc_bomb_damage(vector3_t player_pos, vector3_t bomb_pos, int armor, const std::string& map) {
-    const std::pair<int, int> bomb_calculations = c_esp::calc_bomb(map);
-    const int bomb_damage = bomb_calculations.first;
-    const int bomb_radius = bomb_calculations.second;
-
-    const double c = bomb_radius / 3.0;
-
-    auto armor_modifier = [](float damage, int armor) -> float {
-        if (armor > 0) {
-            const float armor_ratio = 0.5f;
-            const float armor_bonus = 0.5f;
-            float armor_ratio_multiply = damage * armor_ratio;
-            float actual = (damage - armor_ratio_multiply) * armor_bonus;
-
-            if (actual > static_cast<float>(armor)) {
-                actual = static_cast<float>(armor) * (1.f / armor_bonus);
-                armor_ratio_multiply = damage - actual;
-            }
-
-            damage = armor_ratio_multiply;
-        }
-
-        return damage;
-        };
-
-    const float damage = bomb_damage * std::exp(-std::pow(vector3_t::distance(player_pos, bomb_pos), 2) / (2 * std::pow(c, 2)));
-    const float damage_armor = armor_modifier(damage, armor);
-
-    return static_cast<int>(std::floor(damage_armor));
 }
 
 void c_esp::draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, ImVec2 position, ImColor color, const char* text) {

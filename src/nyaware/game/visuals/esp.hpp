@@ -39,9 +39,6 @@ public:
     static ImVec2 calc_rect(ImVec2 top, ImVec2 bottom);
     static float calc_size_by_distance(float size_min, float size_max, float distance);
 
-    static std::pair<int, int> calc_bomb(const std::string& map);
-    static int calc_bomb_damage(vector3_t player_pos, vector3_t bomb_pos, int armor, const std::string& map);
-
     static void draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, ImVec2 position, ImColor color, const char* text);
 
     static inline std::vector<std::pair<bones_t, bones_t>> bone_connections = {

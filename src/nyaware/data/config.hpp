@@ -106,6 +106,13 @@ struct config {
             } outline;
         } esp;
 
+        struct {
+            bool enable = false;
+            bool position_update = false;
+
+            ImVec2 position = { 30, 30 };
+        } spectator_list;
+
         bool anti_flash = false;
         bool force_crosshair = false;
 
@@ -117,6 +124,8 @@ struct config {
 
     struct {
         bool enable = false;
+        bool humanize = false;
+
         bool early_shot = false;
         bool scope_check = false;
 
@@ -186,6 +195,14 @@ private:
         }
         
         return new_array;
+    }
+
+    inline json save_vec2(const ImVec2& vec) {
+        return { { "x", vec.x }, { "y", vec.y } };
+    }
+
+    inline ImVec2 load_vec2(const json& data) {
+        return ImVec2(data.value("x", 0.f), data.value("y", 0.f));
     }
 public:
     std::vector<std::string> get_configList();

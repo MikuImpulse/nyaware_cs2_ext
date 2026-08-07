@@ -123,6 +123,9 @@ bool c_config_manager::save(const std::string& cfg_name) {
 	config["visuals"]["esp"]["outline"]["draw"] = cfg.visuals.esp.outline.draw;
 	config["visuals"]["esp"]["outline"]["color"] = save_color(cfg.visuals.esp.outline.color);
 
+	config["visuals"]["spectator_list"]["enable"] = cfg.visuals.spectator_list.enable;
+	config["visuals"]["spectator_list"]["position"] = save_vec2(cfg.visuals.spectator_list.position);
+
 	config["visuals"]["anti_flash"] = cfg.visuals.anti_flash;
 	config["visuals"]["force_crosshair"] = cfg.visuals.force_crosshair;
 
@@ -130,6 +133,8 @@ bool c_config_manager::save(const std::string& cfg_name) {
 	config["visuals"]["fov"]["value"] = cfg.visuals.fov.value;
 
 	config["legitbot"]["enable"] = cfg.legitbot.enable;
+	config["legitbot"]["humanize"] = cfg.legitbot.humanize;
+
 	config["legitbot"]["early_shot"] = cfg.legitbot.early_shot;
 	config["legitbot"]["scope_check"] = cfg.legitbot.scope_check;
 
@@ -301,6 +306,15 @@ bool c_config_manager::load(const std::string& cfg_name) {
 					}
 				}
 
+				if (visuals.contains("spectator_list") && visuals["spectator_list"].is_object()) {
+					auto& spectator_list = visuals["spectator_list"];
+
+					cfg.visuals.spectator_list.enable = spectator_list.value("enable", cfg.visuals.spectator_list.enable);
+					cfg.visuals.spectator_list.position_update = true;
+
+					cfg.visuals.spectator_list.position = load_vec2(spectator_list["position"]);
+				}
+
 				cfg.visuals.anti_flash = visuals.value("anti_flash", cfg.visuals.anti_flash);
 				cfg.visuals.force_crosshair = visuals.value("force_crosshair", cfg.visuals.force_crosshair);
 
@@ -316,6 +330,8 @@ bool c_config_manager::load(const std::string& cfg_name) {
 				auto& legitbot = config["legitbot"];
 
 				cfg.legitbot.enable = legitbot.value("enable", cfg.legitbot.enable);
+				cfg.legitbot.humanize = legitbot.value("humanize", cfg.legitbot.enable);
+
 				cfg.legitbot.early_shot = legitbot.value("early_shot", cfg.legitbot.early_shot);
 				cfg.legitbot.scope_check = legitbot.value("scope_check", cfg.legitbot.scope_check);
 

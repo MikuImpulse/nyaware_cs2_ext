@@ -118,6 +118,9 @@ void c_runtime_manager::update() {
         was_updated = true;
     }
 
+    team_t spec_target_team = team_t::none;
+    uint32_t local_spec_ping{};
+
     uintptr_t global_vars = mem.read<uintptr_t>(sig2offset.global_vars);
     this->update_map(global_vars);
 
@@ -129,6 +132,29 @@ void c_runtime_manager::update() {
             CCSPlayerController* player_controller = CCSPlayerController::get(entity_list, i);
             if (!player_controller) continue;
 
+            C_CSPlayerPawn* observer_pawn = C_CSPlayerPawn::get(entity_list, player_controller->m_hObserverPawn());
+            if (observer_pawn && !player_controller->m_bPawnIsAlive()) {
+                CPlayer_ObserverServices* observer = observer_pawn->m_pObserverServices();
+
+                if (observer) {
+                    C_CSPlayerPawn* target_pawn = C_CSPlayerPawn::get(entity_list, observer->m_hObserverTarget());
+
+                    if (target_pawn) {
+                        if (!player_controller->m_bIsLocalPlayerController() && target_pawn == local_player.pawn) {
+                            spectator_t spectator = spectator_t(entity_list, player_controller, observer_pawn);
+                            if (!spectator.isValid()) continue;
+
+                            this->spectators.push_back(spectator);
+                        }
+
+                        if (player_controller->m_bIsLocalPlayerController()) {
+                            spec_target_team = target_pawn->m_iTeamNum();
+                            local_spec_ping = player_controller->m_iPing();
+                        }
+                    }
+                }
+            }
+
             C_CSPlayerPawn* player_pawn = C_CSPlayerPawn::get(entity_list, player_controller->m_hPawn());
             if (!player_pawn) continue;
 
@@ -139,17 +165,6 @@ void c_runtime_manager::update() {
                 this->local_player = pl;
             }
             else {
-                //CPlayer_ObserverServices* observer = pl.pawn->m_pObserverServices();
-                //LOGD("observer: %p", observer);
-                //if (observer) {
-                //    C_CSPlayerPawn* target_pawn = C_CSPlayerPawn::get(entity_list, observer->m_hObserverTarget());
-                //    LOGD("target pawn: %p", target_pawn);
-                //    if (target_pawn && target_pawn == local_player.pawn) {
-                //        LOGD("player name: %s", pl.nickname.c_str());
-                //        this->spectators.push_back(pl.nickname);
-                //    }
-                //}
-
                 this->players.push_back(pl);
             }
         }
@@ -157,30 +172,26 @@ void c_runtime_manager::update() {
         ImDrawList* draw = ImGui::GetBackgroundDrawList();
         weapon_config_t* weapon_cfg{};
 
-        if (local_player.isAlive()) {
-            this->local_team = local_player.team;
-
+        if (local_player.isAlive())
             weapon_cfg = legitbot.get_weaponConfig(local_player.weapon.data->m_WeaponType());
-        }
 
-        this->local_ping = local_player.ping;
+        this->local_ping = local_player.isAlive() ? local_player.ping : local_spec_ping;
         this->local_velocity = local_player.pawn->m_vecAbsVelocity();
 
         float current_time = mem.read<float>(global_vars + 0x30);
 
         for (auto player : players) {
-            if (player.isAlive() && player.team != local_team) {
+            team_t enemy_team = local_player.isAlive() ? local_player.team : spec_target_team;
+
+            if (player.isAlive() && player.team != enemy_team) {
                 this->esp.process_player(draw, current_time, player, local_player, view_matrix);
                 if (local_player.isAlive() && weapon_cfg) this->legitbot.find_target(player, local_player, view_matrix, weapon_cfg);
             }
         }
 
-        //for (auto name : spectators) {
-        //    LOGD("%s spectating you", name.c_str());
-        //}
-
-        this->esp.process_world(draw, mem.read<C_CSGameRules*>(sig2offset.game_rules), mem.read<C_PlantedC4*>(mem.read<uintptr_t>(sig2offset.planted_c4)), local_player, view_matrix);
+        this->esp.process_world(draw, mem.read<C_CSGameRules*>(sig2offset.game_rules), mem.read<C_PlantedC4*>(sig2offset.planted_c4), local_player, view_matrix);
         
+        this->visuals.spectator_list(g.uinterface.ui.is_opened, spectators);
         this->visuals.anti_flash(local_player);
         this->visuals.change_fov(local_player);
 
@@ -190,7 +201,7 @@ void c_runtime_manager::update() {
                 this->legitbot.auto_aim(local_player, weapon_cfg);
             }
 
-            this->legitbot.auto_fire(entity_list, local_team, current_time, local_player, weapon_cfg);
+            this->legitbot.auto_fire(entity_list, local_player, weapon_cfg);
         }
 
         this->legitbot.target = {};

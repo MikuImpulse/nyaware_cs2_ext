@@ -28,9 +28,15 @@ player_t::player_t(uintptr_t entity_list, CCSPlayerController* controller, C_CSP
 	}
 }
 
-crosshair_target_t::crosshair_target_t(C_CSPlayerPawn* pawn) {
-	if (!pawn) return;
+spectator_t::spectator_t(uintptr_t entity_list, CCSPlayerController* controller, C_CSPlayerPawn* pawn) {
+	this->controller = controller;
+	this->pawn = pawn;
 
+	this->team = pawn->m_iTeamNum();
+	this->nickname = controller->m_iszPlayerName();
+}
+
+crosshair_target_t::crosshair_target_t(C_CSPlayerPawn* pawn) {
 	this->pawn = pawn;
 	this->team = pawn->m_iTeamNum();
 };

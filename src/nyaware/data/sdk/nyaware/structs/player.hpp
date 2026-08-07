@@ -8,7 +8,7 @@ struct player_t {
 	CCSPlayerController* controller{};
 	C_CSPlayerPawn* pawn{};
 
-	uint8_t team{};
+	team_t team{};
 
 	uint32_t ping{};
 	std::string nickname{};
@@ -49,10 +49,25 @@ struct player_t {
 	}
 };
 
+struct spectator_t {
+	CCSPlayerController* controller{};
+	C_CSPlayerPawn* pawn{};
+
+	team_t team{};
+	std::string nickname{};
+
+	inline bool isValid() const {
+		return controller && pawn;
+	}
+
+	spectator_t() = default;
+	spectator_t(uintptr_t entity_list, CCSPlayerController* controller, C_CSPlayerPawn* pawn);
+};
+
 struct crosshair_target_t {
 	C_CSPlayerPawn* pawn{};
 
-	uint8_t team{};
+	team_t team{};
 
 	crosshair_target_t() = default;
 	crosshair_target_t(C_CSPlayerPawn* pawn);

@@ -31,6 +31,13 @@ enum class flags_t {
 	unblockable_by_player = 1 << 30
 };
 
+enum class team_t : uint8_t {
+	none = 0,
+	spectator = 1,
+	terrorist = 2,
+	counter_terrorist = 3
+};
+
 struct CGameSceneNode {
 	inline vector3_t m_vecAbsOrigin() const {
 		return mem.read<vector3_t>(this_cast + c_schema_dumper::schema_offset["CGameSceneNode"]["m_vecAbsOrigin"]);
@@ -65,8 +72,8 @@ struct C_BaseEntity {
 		return mem.read<T*>(this_cast + c_schema_dumper::schema_offset["C_BaseEntity"]["m_nSubclassID"] + 8); // 2nd class
 	}
 
-	inline uint8_t m_iTeamNum() const {
-		return mem.read<uint8_t>(this_cast + c_schema_dumper::schema_offset["C_BaseEntity"]["m_iTeamNum"]);
+	inline team_t m_iTeamNum() const {
+		return mem.read<team_t>(this_cast + c_schema_dumper::schema_offset["C_BaseEntity"]["m_iTeamNum"]);
 	}
 
 	inline uint32_t m_fFlags() const {

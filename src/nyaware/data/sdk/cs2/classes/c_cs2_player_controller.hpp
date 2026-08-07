@@ -38,5 +38,13 @@ struct CCSPlayerController : CBasePlayerController {
 		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_hPlayerPawn"]);
 	}
 
+	inline uintptr_t m_hObserverPawn() const {
+		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_hObserverPawn"]);
+	}
+
+	inline bool m_bPawnIsAlive() const {
+		return mem.read<bool>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_bPawnIsAlive"]);
+	}
+
 	static CCSPlayerController* get(uintptr_t entity_list, int index);
 };
