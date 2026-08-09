@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "data/globals.hpp"
 
 #include <format>
 #include <fstream>
@@ -312,7 +313,13 @@ bool c_config_manager::load(const std::string& cfg_name) {
 					cfg.visuals.spectator_list.enable = spectator_list.value("enable", cfg.visuals.spectator_list.enable);
 					cfg.visuals.spectator_list.position_update = true;
 
-					cfg.visuals.spectator_list.position = load_vec2(spectator_list["position"]);
+					ImVec2 position = load_vec2(spectator_list["position"]);
+					screen_t& screen = g.screen;
+
+					if (position.x <= screen.width && position.y <= screen.height)
+						cfg.visuals.spectator_list.position = position;
+					else
+						cfg.visuals.spectator_list.position = {30, 30};
 				}
 
 				cfg.visuals.anti_flash = visuals.value("anti_flash", cfg.visuals.anti_flash);

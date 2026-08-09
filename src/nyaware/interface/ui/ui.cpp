@@ -103,14 +103,15 @@ void c_user_interface::watermark() {
         timer = 0.f;
     }
 
-    float velocity = g.runtime.local_velocity.length2d();
+    const local_player_info& local_info = g.runtime.local_info;
+    float velocity = local_info.velocity.length2d();
 
     std::string watermark_elements = std::format("{}{}{}{}{}{}{}", NYAWARE_LOGO, (std::find(cfg.ui.watermark.elements.begin(), cfg.ui.watermark.elements.end(), true) != cfg.ui.watermark.elements.end() ? " " : ""),
         cfg.ui.watermark.elements[0] ? std::format("  {} {}:{:02d}:{:02d}", ICON_CLOCK, lt.wHour, lt.wMinute, lt.wSecond) : "",
         cfg.ui.watermark.elements[1] ? std::format("  {} {} FPS", ICON_WINDOW, fps) : "",
         cfg.ui.watermark.elements[2] ? std::format("  {} {} MB", ICON_RAM, get_memory_mb()) : "",
         cfg.ui.watermark.elements[3] ? std::format("  {} {} u/s", ICON_METER, static_cast<int>(velocity)) : "",
-        cfg.ui.watermark.elements[4] ? std::format("  {} {} ms", ICON_GLOBE, g.runtime.local_ping) : "");
+        cfg.ui.watermark.elements[4] ? std::format("  {} {} ms", ICON_GLOBE, local_info.ping) : "");
 
     ImVec2 elements_size = ImGui::CalcTextSize(watermark_elements.c_str());
     ImVec2 elements_pos = ImVec2(water_pos.x - elements_size.x * 0.5f, water_pos.y - elements_size.y * 0.5f);

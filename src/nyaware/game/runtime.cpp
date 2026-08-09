@@ -14,6 +14,20 @@
 #include "utils/memory.hpp"
 #include "utils/log.hpp"
 
+va_offsets_t c_runtime_manager::find_offsets(const dll_t& client_module) {
+    va_offsets_t offsets{};
+
+    offsets.entity_list = mem.resolve_pattern(client_module.base, client_module.size, signatures::dwEntityList);
+    offsets.view_matrix = mem.resolve_pattern(client_module.base, client_module.size, signatures::dwViewMatrix);
+    offsets.game_rules = mem.resolve_pattern(client_module.base, client_module.size, signatures::dwGameRules);
+    offsets.global_vars = mem.resolve_pattern(client_module.base, client_module.size, signatures::dwGlobalVars);
+    offsets.planted_c4 = mem.resolve_pattern(client_module.base, client_module.size, signatures::dwPlantedC4);
+
+    this->find_buttons(mem.resolve_pattern(client_module.base, client_module.size, signatures::dwKeyButtons));
+
+    return offsets;
+}
+
 void c_runtime_manager::find_buttons(uintptr_t key_buttons_header_ptr) {
     uintptr_t current = mem.read<uintptr_t>(key_buttons_header_ptr);
 
@@ -101,32 +115,16 @@ void c_runtime_manager::update() {
 	this->players.clear();
     this->spectators.clear();
 
-    dll_t& client_dll = g.modules.client;
-
-    static bool was_updated = false;
-    if (!was_updated) {
-        this->sig2offset.entity_list = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwEntityList);
-
-        this->sig2offset.view_matrix = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwViewMatrix);
-
-        this->sig2offset.game_rules = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGameRules);
-        this->sig2offset.global_vars = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwGlobalVars);
-
-        this->sig2offset.planted_c4 = mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwPlantedC4);
-
-        this->find_buttons(mem.resolve_pattern(client_dll.base, client_dll.size, signatures::dwKeyButtons));
-        was_updated = true;
-    }
-
-    team_t spec_target_team = team_t::none;
-    uint32_t local_spec_ping{};
-
-    uintptr_t global_vars = mem.read<uintptr_t>(sig2offset.global_vars);
+    static va_offsets_t offsets = this->find_offsets(g.modules.client);
+    static spectator_info_t spectator_info{};
+    static spec_player_info_t spectating_info{};
+    
+    uintptr_t global_vars = mem.read<uintptr_t>(offsets.global_vars);
     this->update_map(global_vars);
 
-    uintptr_t entity_list = mem.read<uintptr_t>(sig2offset.entity_list);
+    uintptr_t entity_list = mem.read<uintptr_t>(offsets.entity_list);
     if (entity_list) {
-        this->view_matrix = mem.read<matrix_t>(sig2offset.view_matrix);
+        this->view_matrix = mem.read<matrix_t>(offsets.view_matrix);
 
         for (int i = 0; i < 64; i++) {
             CCSPlayerController* player_controller = CCSPlayerController::get(entity_list, i);
@@ -136,7 +134,7 @@ void c_runtime_manager::update() {
             if (observer_pawn && !player_controller->m_bPawnIsAlive()) {
                 CPlayer_ObserverServices* observer = observer_pawn->m_pObserverServices();
 
-                if (observer) {
+                if (observer && observer->m_iObserverLastMode() != observer_mode::none) {
                     C_CSPlayerPawn* target_pawn = C_CSPlayerPawn::get(entity_list, observer->m_hObserverTarget());
 
                     if (target_pawn) {
@@ -148,8 +146,11 @@ void c_runtime_manager::update() {
                         }
 
                         if (player_controller->m_bIsLocalPlayerController()) {
-                            spec_target_team = target_pawn->m_iTeamNum();
-                            local_spec_ping = player_controller->m_iPing();
+                            spectator_info.ping = player_controller->m_iPing();
+                            spectating_info.team = target_pawn->m_iTeamNum();
+
+                            vector3_t spectating_pos = target_pawn->m_vOldOrigin();
+                            spectating_info.top_position = vector3_t(spectating_pos.x, spectating_pos.y, spectating_pos.z + target_pawn->m_vecViewOffset().z);
                         }
                     }
                 }
@@ -161,12 +162,10 @@ void c_runtime_manager::update() {
             player_t pl = player_t(entity_list, player_controller, player_pawn);
             if (!pl.isValid()) continue;
 
-            if (pl.controller->m_bIsLocalPlayerController()) {
+            if (pl.controller->m_bIsLocalPlayerController())
                 this->local_player = pl;
-            }
-            else {
+            else
                 this->players.push_back(pl);
-            }
         }
 
         ImDrawList* draw = ImGui::GetBackgroundDrawList();
@@ -175,21 +174,19 @@ void c_runtime_manager::update() {
         if (local_player.isAlive())
             weapon_cfg = legitbot.get_weaponConfig(local_player.weapon.data->m_WeaponType());
 
-        this->local_ping = local_player.isAlive() ? local_player.ping : local_spec_ping;
-        this->local_velocity = local_player.pawn->m_vecAbsVelocity();
-
-        float current_time = mem.read<float>(global_vars + 0x30);
+        this->local_info.ping = local_player.isAlive() ? local_player.ping : spectator_info.ping;
+        this->local_info.velocity = local_player.pawn->m_vecAbsVelocity();
 
         for (auto player : players) {
-            team_t enemy_team = local_player.isAlive() ? local_player.team : spec_target_team;
+            team_t enemy_team = local_player.isAlive() ? local_player.team : spectating_info.team;
 
             if (player.isAlive() && player.team != enemy_team) {
-                this->esp.process_player(draw, current_time, player, local_player, view_matrix);
+                this->esp.process_player(draw, mem.read<float>(global_vars + 0x30), player, local_player, spectating_info.top_position, view_matrix);
                 if (local_player.isAlive() && weapon_cfg) this->legitbot.find_target(player, local_player, view_matrix, weapon_cfg);
             }
         }
 
-        this->esp.process_world(draw, mem.read<C_CSGameRules*>(sig2offset.game_rules), mem.read<C_PlantedC4*>(sig2offset.planted_c4), local_player, view_matrix);
+        this->esp.process_world(draw, mem.read<C_CSGameRules*>(offsets.game_rules), mem.read<C_PlantedC4*>(offsets.planted_c4), local_player, view_matrix);
         
         this->visuals.spectator_list(g.uinterface.ui.is_opened, spectators);
         this->visuals.anti_flash(local_player);

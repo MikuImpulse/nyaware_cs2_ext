@@ -8,13 +8,27 @@
 
 #include "utils/memory.hpp"
 
-struct CPlayer_ObserverServices {
+enum class observer_mode : uint32_t {
+	 none = 0,
+	 fixed = 1,
+	 in_eye = 2,
+	 chase = 3,
+	 roaming = 4
+};
+
+class CPlayer_ObserverServices {
+public:
 	inline uintptr_t m_hObserverTarget() const {
 		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CPlayer_ObserverServices"]["m_hObserverTarget"]);
 	}
+
+	inline observer_mode m_iObserverLastMode() const {
+		return mem.read<observer_mode>(this_cast + c_schema_dumper::schema_offset["CPlayer_ObserverServices"]["m_iObserverLastMode"]);
+	}
 };
 
-struct C_BasePlayerPawn : C_BaseCombatCharacter {
+class C_BasePlayerPawn : public C_BaseCombatCharacter {
+public:
 	inline CPlayer_WeaponServices* m_pWeaponServices() const {
 		return mem.read<CPlayer_WeaponServices*>(this_cast + c_schema_dumper::schema_offset["C_BasePlayerPawn"]["m_pWeaponServices"]);
 	}
@@ -28,7 +42,8 @@ struct C_BasePlayerPawn : C_BaseCombatCharacter {
 	}
 };
 
-struct C_CSPlayerPawnBase : C_BasePlayerPawn {
+class C_CSPlayerPawnBase : public C_BasePlayerPawn {
+public:
 	inline float m_flFlashBangTime() const {
 		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["C_CSPlayerPawnBase"]["m_flFlashBangTime"]);
 	}
@@ -42,7 +57,8 @@ struct C_CSPlayerPawnBase : C_BasePlayerPawn {
 	}
 };
 
-struct C_CSPlayerPawn : C_CSPlayerPawnBase {
+class C_CSPlayerPawn : public C_CSPlayerPawnBase {
+public:
 	inline CCSPlayer_AimPunchServices* m_pAimPunchServices() const {
 		return mem.read<CCSPlayer_AimPunchServices*>(this_cast + c_schema_dumper::schema_offset["C_CSPlayerPawn"]["m_pAimPunchServices"]);
 	}

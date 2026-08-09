@@ -183,33 +183,34 @@ void esp_player_t::nickName(const std::string& name, float font_size) const {
     c_esp::draw_outlined_text(draw, g.fonts.visuals, font_size, text_pos, cfg.visuals.esp.player.nickName.color, name.c_str());
 }
 
-void esp_player_t::skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const {
+void esp_player_t::skeleton(const C_CSPlayerPawn* pawn, const vector3_t& local_position, const matrix_t& view_matrix) const {
     CSkeletonInstance* node_skeleton = pawn->m_pGameSceneNodeParent();
 
     if (node_skeleton) {
-        boneArray* bone_list = node_skeleton->m_pBoneList();
+        CModelState model_state = node_skeleton->m_modelState();
+        C_BoneArray* bone_array = model_state.m_boneArray;
 
         for (const auto& connection : c_esp::bone_connections) {
-            vector3_t bonePos1 = bone_list->position(connection.first);
-            vector3_t bonePos2 = bone_list->position(connection.second);
+            vector3_t bone_pos1 = bone_array->position(connection.first);
+            vector3_t bone_pos2 = bone_array->position(connection.second);
 
-            vector3_t boneScreen1 = view_matrix.worldToScreenPoint(g.screen, bonePos1);
-            vector3_t boneScreen2 = view_matrix.worldToScreenPoint(g.screen, bonePos2);
+            vector3_t bone_screen1 = view_matrix.worldToScreenPoint(g.screen, bone_pos1);
+            vector3_t bone_screen2 = view_matrix.worldToScreenPoint(g.screen, bone_pos2);
 
-            ImColor boneColor{};
-            if (cfg.visuals.esp.player.skeleton.visible_check && is_local_alive && g.runtime.visible_check_daemon.was_init && !g.uinterface.ui.is_map_updating) {
-                if (g.runtime.visible_check_daemon.is_point_visible(local_position, bonePos1) ||
-                    g.runtime.visible_check_daemon.is_point_visible(local_position, bonePos2))
+            ImColor bone_color{};
+            if (cfg.visuals.esp.player.skeleton.visible_check && g.runtime.visible_check_daemon.was_init && !g.uinterface.ui.is_map_updating) {
+                if (g.runtime.visible_check_daemon.is_point_visible(local_position, bone_pos1) ||
+                    g.runtime.visible_check_daemon.is_point_visible(local_position, bone_pos2))
 
-                    boneColor = cfg.visuals.esp.player.skeleton.visible_color;
+                    bone_color = cfg.visuals.esp.player.skeleton.visible_color;
                 else
-                    boneColor = cfg.visuals.esp.player.skeleton.invisible_color;
+                    bone_color = cfg.visuals.esp.player.skeleton.invisible_color;
             }
             else {
-                boneColor = cfg.visuals.esp.player.skeleton.color;
+                bone_color = cfg.visuals.esp.player.skeleton.color;
             }
 
-            draw->AddLine(ImVec2(boneScreen1.x, boneScreen1.y), ImVec2(boneScreen2.x, boneScreen2.y), boneColor, 1.f);
+            draw->AddLine(ImVec2(bone_screen1.x, bone_screen1.y), ImVec2(bone_screen2.x, bone_screen2.y), bone_color, 1.f);
         }
     }
 }
@@ -455,7 +456,7 @@ void c_esp::draw_outlined_text(ImDrawList* draw, ImFont* font, float font_size, 
     draw->AddText(font, font_size, position, color, text);
 }
 
-void c_esp::process_player(ImDrawList* draw, float current_time, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const {
+void c_esp::process_player(ImDrawList* draw, float current_time, const player_t& player, const player_t& local_player, const vector3_t& top_spec_pos, const matrix_t& view_matrix) const {
     if (!player.isAlive()) return;
 
     vector3_t player_root = player.position;
@@ -467,14 +468,14 @@ void c_esp::process_player(ImDrawList* draw, float current_time, const player_t&
     esp_player_t esp_p(draw, ImRect(top_screen.x, top_screen.y, root_screen.x, root_screen.y));
 
     if (root_screen.z > 0.f && top_screen.z > 0.f) {
-        float distance_toPlayer = vector3_t::distance(local_player.position, player_root);
-        float distance_meters = distance_toPlayer * 0.01f;
+        float distance_to_player = vector3_t::distance(local_player.position, player_root);
+        float distance_meters = distance_to_player * 0.01f;
 
         if (cfg.visuals.esp.player.tracer.draw) esp_p.tracer();
         if (cfg.visuals.esp.player.rect.draw) esp_p.rectangle(player_root, player_top, view_matrix);
         if (cfg.visuals.esp.player.health.draw) esp_p.health(player.health.value, player.health.max, 13.f);
         if (cfg.visuals.esp.player.nickName.draw) esp_p.nickName(player.nickname, 13.f);
-        if (cfg.visuals.esp.player.skeleton.draw) esp_p.skeleton(player.pawn, local_player.isAlive(), local_player.top_position, view_matrix);
+        if (cfg.visuals.esp.player.skeleton.draw) esp_p.skeleton(player.pawn, local_player.isAlive() ? local_player.top_position : top_spec_pos, view_matrix);
         if (cfg.visuals.esp.player.weapon.draw) esp_p.weapon(player.weapon.icon, player.weapon.name, player.weapon.base->m_iClip1(), player.weapon.data->m_iMaxClip1(), player.weapon.base->m_bInReload(), 13.f);
         if (cfg.visuals.esp.player.flags.draw) esp_p.flags((player.weapon.name == "C4" ? ((C_C4*)player.weapon.base)->m_bStartedArming() : false), player.pawn->m_bIsDefusing(), player.pawn->m_bIsScoped(), player.pawn->m_flFlashBangTime(), player.ping, current_time, 13.f);
     }

@@ -10,13 +10,15 @@
 
 #include "utils/memory.hpp"
 
-struct CPlayer_WeaponServices {
+class CPlayer_WeaponServices {
+public:
 	inline uintptr_t m_hActiveWeapon() const {
 		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CPlayer_WeaponServices"]["m_hActiveWeapon"]);
 	}
 };
 
-struct CCSPlayer_AimPunchServices {
+class CCSPlayer_AimPunchServices {
+public:
 	inline vector3_t m_aimPunchCache() const {
 		return mem.read<c_utl_vector>(this_cast + 0x88).to_vector3(); // no in schema
 	}
@@ -105,7 +107,8 @@ inline std::unordered_map<std::string, std::pair<std::string, std::string>> weap
 	{"weapon_xm1014",					{"XM1014",			"~"}}
 };
 
-struct CCSWeaponBaseVData {
+class CCSWeaponBaseVData {
+public:
 	inline int m_iMaxClip1() const {
 		return mem.read<int>(this_cast + c_schema_dumper::schema_offset["CBasePlayerWeaponVData"]["m_iMaxClip1"]);
 	}

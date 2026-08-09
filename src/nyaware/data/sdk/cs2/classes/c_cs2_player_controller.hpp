@@ -7,7 +7,8 @@
 
 #include "c_base_model_entity.hpp"
 
-struct CBasePlayerController : C_BaseEntity {
+class CBasePlayerController : public C_BaseEntity {
+public:
 	inline uintptr_t m_hPawn() const {
 		return mem.read<uintptr_t>(this_cast + c_schema_dumper::schema_offset["CBasePlayerController"]["m_hPawn"]);
 	}
@@ -29,7 +30,8 @@ struct CBasePlayerController : C_BaseEntity {
 	}
 };
 
-struct CCSPlayerController : CBasePlayerController {
+class CCSPlayerController : public CBasePlayerController {
+public:
 	inline uint32_t m_iPing() const {
 		return mem.read<uint32_t>(this_cast + c_schema_dumper::schema_offset["CCSPlayerController"]["m_iPing"]);
 	}

@@ -13,7 +13,8 @@ public:
 	void* m_pMetadata;
 };
 
-struct SchemaClassInfoData_t {
+class SchemaClassInfoData_t {
+public:
 	char pad[0x8];
 	const char* m_szName;
 	const char* m_szProjectName;

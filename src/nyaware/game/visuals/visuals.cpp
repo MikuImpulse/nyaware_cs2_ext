@@ -9,7 +9,7 @@
 #include "utils/log.hpp"
 
 void c_visuals::spectator_list(bool is_ui_opened, const std::vector<spectator_t>& spectators) {
-    if (spectators.empty() && !(is_ui_opened && cfg.visuals.spectator_list.enable)) return;
+    if (!cfg.visuals.spectator_list.enable || (spectators.empty() && !is_ui_opened)) return;
 
     ImGuiStyle& style = ImGui::GetStyle();
     int spectators_count = static_cast<int>(spectators.size());

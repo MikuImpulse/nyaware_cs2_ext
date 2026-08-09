@@ -3,7 +3,8 @@
 #include "data/sdk/schema_dumper.hpp"
 #include "c_base_model_entity.hpp"
 
-struct C_BasePlayerWeapon : C_EconEntity {
+class C_BasePlayerWeapon : public C_EconEntity {
+public:
 	inline int m_iClip1() const {
 		return mem.read<int>(this_cast + c_schema_dumper::schema_offset["C_BasePlayerWeapon"]["m_iClip1"]);
 	}
@@ -13,7 +14,8 @@ struct C_BasePlayerWeapon : C_EconEntity {
 	}
 };
 
-struct C_CSWeaponBase : C_BasePlayerWeapon {
+class C_CSWeaponBase : public C_BasePlayerWeapon {
+public:
 	inline float m_flTurningInaccuracy() const {
 		return mem.read<float>(this_cast + c_schema_dumper::schema_offset["C_CSWeaponBase"]["m_flTurningInaccuracy"]);
 	}
@@ -37,7 +39,8 @@ struct C_CSWeaponBase : C_BasePlayerWeapon {
 	static C_CSWeaponBase* get(uintptr_t entity_list, uintptr_t handle);
 };
 
-struct C_C4 : C_CSWeaponBase {
+class C_C4 : public C_CSWeaponBase {
+public:
 	inline bool m_bStartedArming() const {
 		return mem.read<bool>(this_cast + c_schema_dumper::schema_offset["C_C4"]["m_bStartedArming"]);
 	}

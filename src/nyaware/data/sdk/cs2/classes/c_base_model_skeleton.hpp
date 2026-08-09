@@ -30,8 +30,15 @@ enum class bones_t : int {
     right_foot = 19
 };
 
-struct boneArray {
-	inline vector3_t position(bones_t index) const {
-		return mem.read<vector3_t>(this_cast + (int) index * 0x20);
-	}
+class C_BoneArray {
+public:
+    inline vector3_t position(bones_t index) const {
+        return mem.read<vector3_t>(this_cast + static_cast<int>(index) * 0x20);
+    }
+};
+
+class CModelState {
+public:
+    char pad[0x80];
+    C_BoneArray* m_boneArray{};
 };

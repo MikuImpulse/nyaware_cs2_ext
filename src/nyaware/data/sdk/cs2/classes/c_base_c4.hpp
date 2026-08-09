@@ -3,7 +3,8 @@
 #include "data/sdk/schema_dumper.hpp"
 #include "c_base_model_entity.hpp"
 
-struct C_PlantedC4 : CBaseAnimGraph {
+class C_PlantedC4 : public CBaseAnimGraph {
+public:
 	inline bool m_bBombTicking() const {
 		return mem.read<bool>(this_cast + c_schema_dumper::schema_offset["C_PlantedC4"]["m_bBombTicking"]);
 	}

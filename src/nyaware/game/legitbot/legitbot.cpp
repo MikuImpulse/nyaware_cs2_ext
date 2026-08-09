@@ -101,12 +101,16 @@ void c_legitbot::find_target(const player_t& player, const player_t& local_playe
             break;
     }
 
-    vector3_t bonePos = player.pawn->m_pGameSceneNodeParent()->m_pBoneList()->position(bone);
+    CModelState model_state = player.pawn->m_pGameSceneNodeParent()->m_modelState();
+    C_BoneArray* bone_array = model_state.m_boneArray;
+    if (!bone_array) return;
+
+    vector3_t bone_pos = bone_array->position(bone);
 
     if (g.runtime.visible_check_daemon.was_init && !g.uinterface.ui.is_map_updating && 
-        !g.runtime.visible_check_daemon.is_point_visible(local_player.top_position, bonePos)) return;
+        !g.runtime.visible_check_daemon.is_point_visible(local_player.top_position, bone_pos)) return;
 
-    vector3_t boneScreen = view_matrix.worldToScreenPoint(g.screen, bonePos);
+    vector3_t boneScreen = view_matrix.worldToScreenPoint(g.screen, bone_pos);
     if (boneScreen.z < 0.f) return;
 
     if (isInFOV(ImVec2(boneScreen.x, boneScreen.y), fov_screen_pos, weapon_cfg->fov.value)) {

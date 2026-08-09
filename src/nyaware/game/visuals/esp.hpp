@@ -19,7 +19,7 @@ struct esp_player_t {
     void rectangle(const vector3_t& player_pos, const vector3_t& player_top, const matrix_t& view_matrix) const;
     void health(int health, int health_max, float font_size) const;
     void nickName(const std::string& name, float font_size) const;
-    void skeleton(const C_CSPlayerPawn* pawn, bool is_local_alive, const vector3_t& local_position, const matrix_t& view_matrix) const;
+    void skeleton(const C_CSPlayerPawn* pawn, const vector3_t& local_position, const matrix_t& view_matrix) const;
     void weapon(const std::string& weapon_icon, const std::string& weapon_name, int ammo, int ammo_max, bool reloading, float font_size) const;
     void flags(bool is_planting, bool is_defusing, bool is_scoped, float flashbang_time, uint32_t ping, float current_time, float font_size) const;
 
@@ -65,6 +65,6 @@ public:
         {bones_t::right_knee, bones_t::right_foot},
     };
 
-    void process_player(ImDrawList* draw, float current_time, const player_t& player, const player_t& local_player, const matrix_t& view_matrix) const;
+    void process_player(ImDrawList* draw, float current_time, const player_t& player, const player_t& local_player, const vector3_t& top_spec_pos, const matrix_t& view_matrix) const;
     void process_world(ImDrawList* draw, C_CSGameRules* game_rules, C_PlantedC4* bomb, const player_t& local_player, const matrix_t& view_matrix) const;
 };

@@ -38,19 +38,22 @@ enum class team_t : uint8_t {
 	counter_terrorist = 3
 };
 
-struct CGameSceneNode {
+class CGameSceneNode {
+public:
 	inline vector3_t m_vecAbsOrigin() const {
 		return mem.read<vector3_t>(this_cast + c_schema_dumper::schema_offset["CGameSceneNode"]["m_vecAbsOrigin"]);
 	}
 };
 
-struct CSkeletonInstance : CGameSceneNode {
-	inline boneArray* m_pBoneList() const {
-		return mem.read<boneArray*>(this_cast + c_schema_dumper::schema_offset["CSkeletonInstance"]["m_modelState"] + 0x80);
+class CSkeletonInstance : public CGameSceneNode {
+public:
+	inline CModelState m_modelState() const {
+		return mem.read<CModelState>(this_cast + c_schema_dumper::schema_offset["CSkeletonInstance"]["m_modelState"]);
 	}
 };
 
-struct C_BaseEntity {
+class C_BaseEntity {
+public:
 	inline CGameSceneNode* m_pGameSceneNode() const {
 		return mem.read<CGameSceneNode*>(this_cast + c_schema_dumper::schema_offset["C_BaseEntity"]["m_pGameSceneNode"]);
 	}
@@ -85,20 +88,24 @@ struct C_BaseEntity {
 	}
 };
 
-struct C_BaseModelEntity : C_BaseEntity {
+class C_BaseModelEntity : public C_BaseEntity {
+public:
 	inline vector3_t m_vecViewOffset() const {
 		return mem.read<vector3_t>(this_cast + c_schema_dumper::schema_offset["C_BaseModelEntity"]["m_vecViewOffset"]);
 	}
 };
 
-struct CBaseAnimGraph : C_BaseModelEntity {
+class CBaseAnimGraph : public C_BaseModelEntity {
+public:
 
 };
 
-struct C_BaseCombatCharacter : CBaseAnimGraph {
+class C_BaseCombatCharacter : public CBaseAnimGraph {
+public:
 
 };
 
-struct C_EconEntity : CBaseAnimGraph {
+class C_EconEntity : public CBaseAnimGraph {
+public:
 	
 };
